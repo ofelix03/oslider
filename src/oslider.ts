@@ -146,7 +146,7 @@ export class Oslider {
 	}	
 
 	getId() {
-		return this.id;
+		return this.oslider_id;
 	}
 
 	autoPlay() {

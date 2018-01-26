@@ -1,0 +1,26 @@
+{
+  "name": "oslide",
+  "version": "0.2.0",
+  "description": "slider plugin jquery",
+  "main": "src/oslider.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "slider",
+    "carousel",
+    "oslider"
+  ],
+  "author": "Felix Otoo <ofelix03@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jquery": "^3.2.16",
+    "@types/node": "^8.0.57",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.2.1"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.4.1",
+    "typescript": "^2.6.2"
+  }
+}

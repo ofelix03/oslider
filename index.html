@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Oslider</title>
+	<link rel="stylesheet" type="text/css" href="node_modules/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="src/oslider.css">
+	<style type="text/css">
+
+	.container-wrapper {
+		padding: 4px;
+		display: inline-block;
+		margin: auto auto;
+	}
+
+	.container {
+		width: 200px;
+		height: 200px;
+		margin: 30px auto;
+	}
+
+	.container2 {
+            width: 300px;
+            height: 200px;
+            border: 1px solid red;
+            margin: 30px auto;
+        }
+/*
+	.time 
+	width: 100px;
+	height: 100%;
+	border: 1px solid #ddd;
+}
+*/
+.time-wrapper {
+	width: 100px;
+	height: 150px;
+	display: flex;
+	flex-direction: row nowrap;
+	margin-top: 100px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* .oslider__slide {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.oslider__slide > span {
+	font-weight: bold;
+	align-self: center;
+} */
+
+</style>
+</head>
+<body>
+	<div class="container">
+		<img src="imgs/photo-1418479631014-8cbf89db3431.jpg" />
+		<img src="imgs/photo-1422405153578-4bd676b19036.jpg" />
+		<img src="imgs/photo-1422513391413-ddd4f2ce3340.jpg" />
+		<img src="imgs/QTrNn7DETWGsjyS5L2n5__MG_8345.jpg" />
+		<img src="imgs/72adf455.jpg" />
+		<img src="imgs/photo-1421098518790-5a14be02b243.jpg" />
+		<img src="imgs/photo-1423439793616-f2aa4356b37e.jpg" />
+		<img src="imgs/download.jpg" class="oslider__slide" />
+	</div> 
+	<div class="time-wrapper">
+		<div class="time time__hour">
+			<div>
+				<span>12</span>
+			</div>
+			<div>
+				<span>11</span>
+			</div>
+			<div>
+				<span>10</span>
+			</div>
+			<div>
+				<span>09</span>
+			</div>
+			<div>
+				<span>08</span>
+			</div>
+			<div>
+				<span>07</span>
+			</div>
+			<div>
+				<span>06</span>
+			</div>
+			<div>
+				<span>05</span>
+			</div>
+			<div>
+				<span>04</span>
+			</div>
+			<div>
+				<span>03</span>
+			</div>
+			<div>
+				<span>02</span>
+			</div>
+			<div>
+				<span>01</span>
+			</div>
+		</div>
+		<div class="time time__minute">
+			<div>
+				<span>12</span>
+			</div>
+			<div>
+				<span>11</span>
+			</div>
+			<div>
+				<span>10</span>
+			</div>
+			<div>
+				<span>09</span>
+			</div>
+			<div>
+				<span>08</span>
+			</div>
+			<div>
+				<span>07</span>
+			</div>
+			<div>
+				<span>06</span>
+			</div>
+			<div>
+				<span>05</span>
+			</div>
+			<div>
+				<span>04</span>
+			</div>
+			<div>
+				<span>03</span>
+			</div>
+			<div>
+				<span>02</span>
+			</div>
+			<div>
+				<span>01</span>
+			</div>
+		</div>
+	</div>	
+
+	<div class="container2">	
+        <div>one</div>
+        <div>two</div>
+        <div>three</div>
+        <div>four</div>
+    </div>
+
+	
+	<script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="dist/bundle.js"></script>
+	<script type="text/javascript">
+
+
+		$('.time__hour').oslider({
+			// visibleSlides: 3,
+			orientation: 'vertical',
+			showNav: true,
+			// dotNav: true,
+			scrollSlides: 1,
+			onSwipeEventHandler: (event) => console.log('time hour', this.id)
+		});
+
+		$('.container').oslider({
+			// visibleSlides: 3,
+			showNav: true,
+			dotNav: true,
+			scrollSlides: 1,
+			autoplaySpeed: 2000,
+			// autoplay: true,
+			// infinite: true,
+			onSwipeEventHandler: onSwipe,
+		});
+		
+		function onSwipe(event) {
+
+			console.log('am new here', this.id);
+		}
+
+		$('.time__minute').oslider({
+			// visibleSlides: 3,
+			orientation: 'vertical',
+			showNav: true,
+			// dotNav: true,
+			scrollSlides: 1,
+			onSwipeEventHandler: (event) => console.log('time minute', this.id)
+		});
+
+		$('.container2').oslider({
+			orientation: 'vertical',
+			showNav: true,
+			dotNav: true,
+			scrollSlides: 1,
+			onSwipeEventHandler: (event) => console.log('container 2', this.id)
+		});
+
+	</script>
+</body>
+</html>

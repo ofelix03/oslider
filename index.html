@@ -41,17 +41,6 @@
 	margin-right: auto;
 }
 
-/* .oslider__slide {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-}
-
-.oslider__slide > span {
-	font-weight: bold;
-	align-self: center;
-} */
-
 </style>
 </head>
 <body>
@@ -163,7 +152,7 @@
 			showNav: true,
 			// dotNav: true,
 			scrollSlides: 1,
-			onSwipeEventHandler: (event) => console.log('time hour', this.id)
+			onSwipeEventHandler: onSwipe,
 		});
 
 		$('.container').oslider({
@@ -179,7 +168,7 @@
 		
 		function onSwipe(event) {
 
-			console.log('am new here', this.id);
+			console.log('am new here', this.oslider_id);
 		}
 
 		$('.time__minute').oslider({
@@ -188,7 +177,7 @@
 			showNav: true,
 			// dotNav: true,
 			scrollSlides: 1,
-			onSwipeEventHandler: (event) => console.log('time minute', this.id)
+			onSwipeEventHandler: onSwipe,
 		});
 
 		$('.container2').oslider({
@@ -196,7 +185,7 @@
 			showNav: true,
 			dotNav: true,
 			scrollSlides: 1,
-			onSwipeEventHandler: (event) => console.log('container 2', this.id)
+			onSwipeEventHandler: onSwipe,
 		});
 
 	</script>

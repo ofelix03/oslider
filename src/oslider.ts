@@ -1,10 +1,10 @@
 
 import * as JQuery from 'jquery';
 
-let $ = JQuery,
-	oslider_id = 0;
+let name = 'Felix';
+let $ = JQuery;
 
-export enum Orientations {
+export 	enum Orientations {
 	HORIZONTAL = "horizontal",
 	VERTICAL = "vertical",
 };
@@ -50,6 +50,7 @@ export interface Events  {
 	initialize: any,
 }
 
+let oslider_id = 0;
 export class Oslider {
 	Events:Events;
 
@@ -118,11 +119,16 @@ export class Oslider {
 		postSwipe: null,
 		initialize: null,		
 	};
+	oslider_id = 0;
 	
 	constructor(selector:any, options: {}) {
+		console.log("constructing");
 		let o = this;
 		/** Slider instance id */
-		o.id = oslider_id = oslider_id  + 1;
+		this.oslider_id = oslider_id  + 1;
+		oslider_id = this.oslider_id;
+		console.log(`o.id = ${o.oslider_id})`)
+		console.log(`this.id = ${o.oslider_id}`);
 		o.selector = selector;
 		o.$selector = $(selector);
 		o.options = $.extend({}, o.defaultOptions, options);
@@ -161,13 +167,13 @@ export class Oslider {
 
 	getTrailDirection() {
 		let len = this.sliderScrollTrail.length,
-			matches = {
-				right: 0,
-				left: 0,
-				top: 0,
-				bottom: 0,
-			};
-					
+		matches = {
+			right: 0,
+			left: 0,
+			top: 0,
+			bottom: 0,
+		};
+
 		for (let trailDirection of this.sliderScrollTrail) {
 			if (trailDirection == SliderScrollTrails.Left) {
 				matches.left += 1;
@@ -229,7 +235,8 @@ export class Oslider {
 	}
 
 	scrollLeft(scrollPixels?:number, rescroll:boolean = false) {
-		console.log('scrollLeft');
+		console.log(`scrollLeft = ${this.oslider_id}`);
+		console.log("checking now", this.oslider_id)
 		console.log(`scrollPixelds = ${scrollPixels}; rescroll = ${rescroll}`);
 		let o = this;
 
@@ -306,10 +313,12 @@ export class Oslider {
 	}
 
 	scrollRight(scrollPixels?:number, rescroll:boolean=false) {
-		console.log('scrollRight');
+		console.log(`scrollRight = ${this.oslider_id}`);
+		console.log("checking now", this.oslider_id)
 		console.log(`scrollPixelds = ${scrollPixels}; rescroll = ${rescroll}`);
 
-		let o = this, offset;
+		let o = this, 
+		offset;
 
 		o.$selector.trigger(
 			o.events.preSwipe({
@@ -474,7 +483,7 @@ export class Oslider {
 					console.log('isDragging.right');
 					console.log('o.isDragging', o.isDragging);
 					console.log(`o.dragOffsetFromTouchPoint = ${o.dragOffsetFromTouchPoint}`);
-				
+
 					if (o.dragOffsetFromTouchPoint > 0) {
 						console.log(`o.dragOffsetFromTouchPoint > 0 = ${o.dragOffsetFromTouchPoint}`)
 						if (o.dragOffsetFromTouchPoint > (o.slideWidth / 4)) {
@@ -493,14 +502,14 @@ export class Oslider {
 			} else if (o.options.orientation == o.orientations.VERTICAL) {
 				if (o.isDragging.top == true) { // a mouse swipe to the top
 					if (o.dragOffsetFromTouchPoint > 0) {
-					if (o.dragOffsetFromTouchPoint > (o.slideWidth / 4)) {
-						o.scrollRight();
-						o.updateDotNav(o.SCROLL_LEFT);
-					} else {
-						o.scrollRight(o.sliderOffset, true);
-						o.updateDotNav(o.SCROLL_LEFT);
-					}
-				} 
+						if (o.dragOffsetFromTouchPoint > (o.slideWidth / 4)) {
+							o.scrollRight();
+							o.updateDotNav(o.SCROLL_LEFT);
+						} else {
+							o.scrollRight(o.sliderOffset, true);
+							o.updateDotNav(o.SCROLL_LEFT);
+						}
+					} 
 			} else if (o.isDragging.bottom == true) { // a mouse swipe to the bottom
 				if (o.dragOffsetFromTouchPoint > 0) {
 					if (o.dragOffsetFromTouchPoint > (o.slideWidth / 4)) {
@@ -525,7 +534,7 @@ export class Oslider {
 		console.log('o.isDragging = ', o.isDragging)
 
 		if (o.options.orientation == o.orientations.HORIZONTAL) {
-				if (event.offsetX > 0 && event.offsetX < o.dragStartPos) { 
+			if (event.offsetX > 0 && event.offsetX < o.dragStartPos) { 
 					// a left swipe/mouse scroll equiavlent to a left nav click
 					offset = Math.abs(o.dragStartPos) - Math.abs(event.offsetX);
 					o.dragOffsetFromTouchPoint = offset;
@@ -665,12 +674,12 @@ export class Oslider {
 
 	prepareSlides() {
 		let o = this, 
-			$oslider, 
-			$osliderInnerContainer;
+		$oslider, 
+		$osliderInnerContainer;
 
 		if (o.$selector)
 			$oslider = $('<div class="oslider" draggable="true">');
-		o.$selector.addClass('oslider-container').data('oslider-id', o.id)
+		o.$selector.addClass('oslider-container').data('oslider-id', o.oslider_id)
 		$oslider.append(o.$selector.children().addClass('oslider__slide'))
 		$osliderInnerContainer = $('<div class="oslider-container__inner">');
 		$osliderInnerContainer.append($oslider);
@@ -680,8 +689,8 @@ export class Oslider {
 
 	setupNavigations() {
 		let o = this, 
-			$sliderArrowsMarkup,
-			offset;
+		$sliderArrowsMarkup,
+		offset;
 
 		if (o.options.orientation == o.orientations.HORIZONTAL) {
 			$sliderArrowsMarkup = `
@@ -711,8 +720,8 @@ export class Oslider {
 
 	setupDotNavigation() {
 		let o = this, 
-			$dotNavWrapper,
-			dotNavItemsHtml;
+		$dotNavWrapper,
+		dotNavItemsHtml;
 
 		if (o.options.dotNav) {
 			if ( ! o.isReiniting) {
@@ -782,7 +791,7 @@ export class Oslider {
 }
 
 interface JQuery {
-    oslider(options?:any): JQuery
+	oslider(options?:any): JQuery
 }
 
 jQuery.fn.extend({

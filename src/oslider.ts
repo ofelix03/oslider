@@ -63,6 +63,8 @@ export class Oslider {
 	$slides: any;
 	$arrows: any;
 	currentSlide:number = 0;
+	$currentActiveSlides = [];
+	$currentSlide: any;
 	numberOfSlides:number;
 	sliderContainerDimension = {
 		height: 200,
@@ -94,10 +96,10 @@ export class Oslider {
 		autoplay: false,
 		autoplaySpeed: 5000,
 		infinite: false,		
-		onSwipeEventHandler: (event: JQuery.Event) => console.log(''),
-		onPreswipeEventHandler: (event: JQuery.Event) => console.log(''),
-		onPostswipeEventHandler: (event: JQuery.Event) => console.log(''),
-		onInitilizeEventHandler: (event: JQuery.Event) => console.log(''), 
+		onSwipeEventHandler: Object,
+		onPreswipeEventHandler: Object,
+		onPostswipeEventHandler: Object,
+		onInitilizeEventHandler: Object, 
 	};
 	dragStartPos: number|null = null;
 	sliderOffset:number = 0;
@@ -122,13 +124,10 @@ export class Oslider {
 	oslider_id = 0;
 	
 	constructor(selector:any, options: {}) {
-		console.log("constructing");
 		let o = this;
 		/** Slider instance id */
 		this.oslider_id = oslider_id  + 1;
 		oslider_id = this.oslider_id;
-		console.log(`o.id = ${o.oslider_id})`)
-		console.log(`this.id = ${o.oslider_id}`);
 		o.selector = selector;
 		o.$selector = $(selector);
 		o.options = $.extend({}, o.defaultOptions, options);
@@ -137,16 +136,22 @@ export class Oslider {
 			throw new Error("Constraint scrollSlides <= visibleSlides not upheld");
 		}
 		o.events = {
-			swipe: (eventData) => JQuery.Event('oslider.swipe', eventData),
-			preSwipe: (eventData) => JQuery.Event('oslider.preswipe', eventData),
-			postSwipe: (eventData) => JQuery.Event('oslider.initialize', eventData),			
-			initialize: (eventData) => JQuery.Event('oslider.initialize', eventData),
+			swipe: (eventData) => JQuery.Event('oslider.swipe', {oslider: eventData}),
+			preSwipe: (eventData) => JQuery.Event('oslider.preswipe', {oslider: eventData}),
+			postSwipe: (eventData) => JQuery.Event('oslider.initialize', {oslider: eventData}),			
+			initialize: (eventData) => JQuery.Event('oslider.initialize', {oslider: eventData}),
 		}	
 		o.bootstrap();
+
+		return this;
 	}	
 
-	getId() {
+	getId(): number {
 		return this.oslider_id;
+	}
+
+	getInstance(): Oslider {
+		return this;
 	}
 
 	autoPlay() {
@@ -235,17 +240,13 @@ export class Oslider {
 	}
 
 	scrollLeft(scrollPixels?:number, rescroll:boolean = false) {
-		console.log(`scrollLeft = ${this.oslider_id}`);
-		console.log("checking now", this.oslider_id)
-		console.log(`scrollPixelds = ${scrollPixels}; rescroll = ${rescroll}`);
 		let o = this;
-
 		o.$selector.trigger(
 			o.events.preSwipe({
 				currentSlideEl: o.$slider.get(o.currentSlide),
 				currentSlideIndex: o.currentSlide,
 				swipe_direction: o.SCROLL_LEFT,	
-				sliderId: this.id,
+				sliderId: o.getId(),
 			}));
 
 		if (o.currentSlide == 0) {
@@ -253,31 +254,21 @@ export class Oslider {
 		}
 
 		if (scrollPixels !== undefined) {
-		 	/** 
-			for:
-			sliderOffset = -200
-		    scrollPixels = 50
-		    scrollPixels = sliderOffset + scrollPixels;
-		    => spcrollPixels = -200 + 50 => -150,
-		    hence the slider has been moved forward by 50px, revealing 50px of the next slider 
-		    left to the current visible slider 
-		    */
-		    if (rescroll == false) {
-		    	scrollPixels = o.sliderOffset + scrollPixels
-		    }
+			if (rescroll == false) {
+				scrollPixels = o.sliderOffset + scrollPixels
+			}
 
-		    if (o.options.orientation == this.orientations.HORIZONTAL) {
-		    	o.$slider.css({
-		    		left: scrollPixels
-		    	});	
-		    } else if (o.options.orientation == this.orientations.VERTICAL) {
-		    	o.$slider.css({
-		    		top: scrollPixels
-		    	});	
-		    }
-		    return;
+			if (o.options.orientation == this.orientations.HORIZONTAL) {
+				o.$slider.css({
+					left: scrollPixels
+				});	
+			} else if (o.options.orientation == this.orientations.VERTICAL) {
+				o.$slider.css({
+					top: scrollPixels
+				});	
+			}
+			return;
 		}
-
 		// complete scrolls
 		if (o.options.orientation == this.orientations.HORIZONTAL) {
 			let offset = o.getScrollOffsetFor('left');
@@ -300,7 +291,7 @@ export class Oslider {
 				currentSlideEl: o.$slider.get(o.currentSlide),
 				currentSlideIndex: o.currentSlide,
 				swipe_direction: o.SCROLL_LEFT,
-				sliderId: this.id,
+				sliderId: o.getId(),
 			}));
 
 		o.$selector.trigger(
@@ -308,15 +299,11 @@ export class Oslider {
 				currentSlideEl: o.$slider.get(o.currentSlide),
 				currentSlideIndex: o.currentSlide,
 				swipe_direction: o.SCROLL_LEFT,
-				sliderId: this.id,
+				sliderId: o.getId(),
 			}));
 	}
 
 	scrollRight(scrollPixels?:number, rescroll:boolean=false) {
-		console.log(`scrollRight = ${this.oslider_id}`);
-		console.log("checking now", this.oslider_id)
-		console.log(`scrollPixelds = ${scrollPixels}; rescroll = ${rescroll}`);
-
 		let o = this, 
 		offset;
 
@@ -325,7 +312,7 @@ export class Oslider {
 				currentSlideEl: o.$slider.get(o.currentSlide),
 				currentSlideIndex: o.currentSlide,
 				swipe_direction: o.SCROLL_LEFT,
-				sliderId: this.id,
+				sliderId: this.getId(),
 			}));
 
 		if (o.currentSlide == Math.ceil(o.numberOfSlides / o.options.scrollSlides) - 1) {
@@ -385,15 +372,15 @@ export class Oslider {
 				currentSlideEl: o.$slider.get(o.currentSlide),
 				currentSlideIndex: o.currentSlide,
 				swipe_direction: o.SCROLL_RIGHT,
-				sliderId: this.id,
+				sliderId: this.getId(),
 			}));
-
+		
 		o.$selector.trigger(
 			o.events.postSwipe({
 				currentSlideEl: o.$slider.get(o.currentSlide),
 				currentSlideIndex: o.currentSlide,
 				swipe_direction: o.SCROLL_RIGHT,	
-				sliderId: this.id,
+				sliderId: this.getId(),
 			}));
 	}
 
@@ -440,7 +427,6 @@ export class Oslider {
 		o.$selector.find('.oslider').on('drag', drag)
 
 		function dragStart(event) {
-			console.log(`dragStart = ${event.offsetX}`)
 			o.sliderScrollTrail = []
 			let ghostImg = document.querySelector('.oslider__ghostImg');
 			event.originalEvent.dataTransfer.setDragImage(ghostImg, 0, 0)
@@ -456,19 +442,10 @@ export class Oslider {
 		}
 
 		function dragEnd(event) {
-			console.log(`dragend = ${event.offsetX}`)
-			console.log('o.isDragging', o.isDragging);
-			console.log('o.trails', o.sliderScrollTrail);
-			console.log("matchesPreviousTrail", o.getTrailDirection())
-
 			if (o.options.orientation == o.orientations.HORIZONTAL) {
 				if (o.isDragging.left == true) { // a mouse swipe to the left
-					console.log('isDragging.left');
-					console.log('o.isDragging', o.isDragging);
-					console.log(`o.dragOffsetFromTouchPoint = ${o.dragOffsetFromTouchPoint}`);
 					if (o.dragOffsetFromTouchPoint > 0) {
 						if (o.dragOffsetFromTouchPoint > (o.slideWidth / 4)) {
-							console.log('o.dragOffsetFromTouchPoint > (o.slideWidth / 4)', o.dragOffsetFromTouchPoint > (o.slideWidth / 4))
 							o.scrollRight();
 							o.updateCurrentActiveSlides();
 							o.updateDotNav(o.SCROLL_LEFT);
@@ -477,22 +454,15 @@ export class Oslider {
 							o.updateDotNav(o.SCROLL_LEFT);
 						}
 					} else {
-						console.log('o.dragOffsetFromTouchPoint < (o.slideWidth / 4)', o.dragOffsetFromTouchPoint > (o.slideWidth / 4))
+
 					}
 				} else if (o.isDragging.right == true) { // a mouse swipe to the right
-					console.log('isDragging.right');
-					console.log('o.isDragging', o.isDragging);
-					console.log(`o.dragOffsetFromTouchPoint = ${o.dragOffsetFromTouchPoint}`);
-
 					if (o.dragOffsetFromTouchPoint > 0) {
-						console.log(`o.dragOffsetFromTouchPoint > 0 = ${o.dragOffsetFromTouchPoint}`)
 						if (o.dragOffsetFromTouchPoint > (o.slideWidth / 4)) {
-							console.log('o.dragOffsetFromTouchPoint > (o.slideWidth / 4)', o.dragOffsetFromTouchPoint > (o.slideWidth / 4))
 							o.scrollLeft();
 							o.updateCurrentActiveSlides();
 							o.updateDotNav(o.SCROLL_RIGHT);
 						} else {
-							console.log('o.dragOffsetFromTouchPoint < (o.slideWidth / 4)', o.dragOffsetFromTouchPoint > (o.slideWidth / 4))
 							o.scrollLeft(o.sliderOffset, true);
 							o.updateDotNav(o.SCROLL_RIGHT);
 						}
@@ -529,16 +499,11 @@ export class Oslider {
 
 	function drag(event) {
 		let offset;
-		console.log(`drag = ${event.offsetX}`)
-		console.log(`o.sliderScrollTrail = ${o.sliderScrollTrail}`)
-		console.log('o.isDragging = ', o.isDragging)
-
 		if (o.options.orientation == o.orientations.HORIZONTAL) {
 			if (event.offsetX > 0 && event.offsetX < o.dragStartPos) { 
 					// a left swipe/mouse scroll equiavlent to a left nav click
 					offset = Math.abs(o.dragStartPos) - Math.abs(event.offsetX);
 					o.dragOffsetFromTouchPoint = offset;
-					console.log("matchesPreviousTrail", o.getTrailDirection())
 					o.isDragging.left = o.getTrailDirection() == SliderScrollTrails.Left ? true: false;
 					o.isDragging.right = o.getTrailDirection() == SliderScrollTrails.Right ? true: false;
 					o.scrollRight(offset);
@@ -679,7 +644,7 @@ export class Oslider {
 
 		if (o.$selector)
 			$oslider = $('<div class="oslider" draggable="true">');
-		o.$selector.addClass('oslider-container').data('oslider-id', o.oslider_id)
+		o.$selector.addClass('oslider-container').data('oslider-id', o.oslider_id);
 		$oslider.append(o.$selector.children().addClass('oslider__slide'))
 		$osliderInnerContainer = $('<div class="oslider-container__inner">');
 		$osliderInnerContainer.append($oslider);
@@ -775,16 +740,19 @@ export class Oslider {
 
 	updateCurrentActiveSlides() {
 		let o = this;
-
 		o.currentActiveSlides = [];
-		for (let i = o.currentSlide; i <= (o.currentSlide + o.options.scrollSlides); i++) {
+		for (let i = o.currentSlide; i < (o.currentSlide + o.options.scrollSlides); i++) {
 			o.currentActiveSlides.push(i)
 		}
 
 		o.$slides.each(function(index){
 			let $slide = $(this);
-			if (index in o.currentActiveSlides) {
+			let isActive = o.currentActiveSlides.filter((el => el == index)).length;
+			if (isActive) {
+				o.$currentActiveSlides.push($slide);
 				$slide.addClass('oslider__slide--active');
+			} else {
+				$slide.removeClass('oslider__slide--active');
 			}
 		});
 	}	

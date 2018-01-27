@@ -146,20 +146,20 @@
 	<script type="text/javascript">
 
 
-		$('.time__hour').oslider({
-			// visibleSlides: 3,
-			orientation: 'vertical',
-			showNav: true,
-			// dotNav: true,
-			scrollSlides: 1,
-			onSwipeEventHandler: onSwipe,
-		});
+		// $('.time__hour').oslider({
+		// 	// visibleSlides: 3,
+		// 	orientation: 'vertical',
+		// 	showNav: true,
+		// 	// dotNav: true,
+		// 	scrollSlides: 1,
+		// 	onSwipeEventHandler: onSwipe,
+		// });
 
 		$('.container').oslider({
-			// visibleSlides: 3,
+			visibleSlides: 2,
 			showNav: true,
 			dotNav: true,
-			scrollSlides: 1,
+			scrollSlides: 2,
 			autoplaySpeed: 2000,
 			// autoplay: true,
 			// infinite: true,
@@ -167,26 +167,25 @@
 		});
 		
 		function onSwipe(event) {
-
-			console.log('am new here', this.oslider_id);
+			console.log('am new here', event);
 		}
 
-		$('.time__minute').oslider({
-			// visibleSlides: 3,
-			orientation: 'vertical',
-			showNav: true,
-			// dotNav: true,
-			scrollSlides: 1,
-			onSwipeEventHandler: onSwipe,
-		});
+		// $('.time__minute').oslider({
+		// 	// visibleSlides: 3,
+		// 	orientation: 'vertical',
+		// 	showNav: true,
+		// 	// dotNav: true,
+		// 	scrollSlides: 1,
+		// 	onSwipeEventHandler: onSwipe,
+		// });
 
-		$('.container2').oslider({
-			orientation: 'vertical',
-			showNav: true,
-			dotNav: true,
-			scrollSlides: 1,
-			onSwipeEventHandler: onSwipe,
-		});
+		// $('.container2').oslider({
+		// 	orientation: 'vertical',
+		// 	showNav: true,
+		// 	dotNav: true,
+		// 	scrollSlides: 1,
+		// 	onSwipeEventHandler: onSwipe,
+		// });
 
 	</script>
 </body>

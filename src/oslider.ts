@@ -154,6 +154,14 @@ export class Oslider {
 		return this;
 	}
 
+	addSlide(el: any, index:number = 0) {
+		console.log("adding slide", el, index);
+	}
+
+	removeSlide(index:number) {
+		
+	}
+
 	autoPlay() {
 		let o = this, autoPlayFn;
 		autoPlayFn = () => {

@@ -204,6 +204,12 @@ var Oslider = /** @class */ (function () {
     Oslider.prototype.getInstance = function () {
         return this;
     };
+    Oslider.prototype.addSlide = function (el, index) {
+        if (index === void 0) { index = 0; }
+        console.log("adding slide", el, index);
+    };
+    Oslider.prototype.removeSlide = function (index) {
+    };
     Oslider.prototype.autoPlay = function () {
         var o = this, autoPlayFn;
         autoPlayFn = function () {

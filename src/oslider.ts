@@ -145,21 +145,60 @@ export class Oslider {
 
 		return this;
 	}	
-
 	getId(): number {
 		return this.oslider_id;
 	}
 
-	getInstance(): Oslider {
-		return this;
+	addSlide(el: any, index:number, before:boolean = false) {
+		let o = this;
+		let $el, $targetEl;
+		o.isReiniting = true;
+		if (typeof el === "string")  {
+			$el = $(el);
+		} else {
+			$el = el;
+		}
+		console.log("adding slide", el, index);
+
+		if (index !== undefined) {
+			$targetEl = $(o.$slides.get(index));
+		} else {
+			// intent is to put new slide at the end of slides
+			// get last slide in the current $slides list
+			$targetEl = o.$slider.last();
+		}
+
+		if ($targetEl === undefined) {
+			throw  'Index out of bound';
+		}
+
+		if (before) {
+			$targetEl.before($el);
+		} else {
+			$targetEl.after($el);
+		}
+		o.reboot();
 	}
 
-	addSlide(el: any, index:number = 0) {
-		console.log("adding slide", el, index);
-	}
 
 	removeSlide(index:number) {
-		
+		console.log("removing slide", index);
+		let o = this,
+		$targetEl;
+
+		if (index == undefined) {
+			throw "No index of slide provided. No slide removed";
+		}
+		console.log("length", o.$slides.length);
+		if (index > o.$slides.length) {
+			throw "Remove slide index out of bound"; 
+		}
+
+		$targetEl = $(o.$slides.get(index));
+		$targetEl.remove();
+		console.log("number of slides before boostrap", o.numberOfSlides);
+		o.reboot();
+		console.log("number of slides after boostrap", o.numberOfSlides);
 	}
 
 	autoPlay() {
@@ -571,8 +610,13 @@ export class Oslider {
 		}
 		o.updateCurrentActiveSlides();
 	}
+	reboot() {
+		this.currentSlide = 0;
+		this.bootstrap();
+	}
 
 	bootstrap() {
+		console.log("bootstrapping");
 		let o = this, height, width;
 
 		o.prepareSlider();
@@ -631,6 +675,8 @@ export class Oslider {
 				swipe_direction: o.SCROLL_LEFT,
 				sliderId: this.id,
 			}));
+
+		console.log("after boostrap", o.numberOfSlides)
 	}
 
 	prepareSlider() {
@@ -649,21 +695,30 @@ export class Oslider {
 		let o = this, 
 		$oslider, 
 		$osliderInnerContainer;
-
-		if (o.$selector)
+		console.log("slider", o.$slider);
+		if (o.$slider === undefined) {
+			console.log("first tagging");
 			$oslider = $('<div class="oslider" draggable="true">');
-		o.$selector.addClass('oslider-container').data('oslider-id', o.oslider_id);
-		$oslider.append(o.$selector.children().addClass('oslider__slide'))
-		$osliderInnerContainer = $('<div class="oslider-container__inner">');
-		$osliderInnerContainer.append($oslider);
-		o.$selector.append($osliderInnerContainer);
-		o.$selector = $(document).find(o.selector);
+			o.$selector.addClass('oslider-container').data('oslider-id', o.oslider_id);
+			$oslider.append(o.$selector.children().addClass('oslider__slide'))
+			$osliderInnerContainer = $('<div class="oslider-container__inner">');
+			$osliderInnerContainer.append($oslider);
+			o.$selector.append($osliderInnerContainer);
+			o.$selector = $(document).find(o.selector);
+		} else {
+			o.$slides = o.$selector.find('.oslider').children().addClass('oslider__slide');
+		} 
+
+		
 	}
 
 	setupNavigations() {
 		let o = this, 
 		$sliderArrowsMarkup,
 		offset;
+
+		if (o.isReiniting) 
+			return;
 
 		if (o.options.orientation == o.orientations.HORIZONTAL) {
 			$sliderArrowsMarkup = `
@@ -694,14 +749,11 @@ export class Oslider {
 	setupDotNavigation() {
 		let o = this, 
 		$dotNavWrapper,
-		dotNavItemsHtml;
+		dotNavItemsHtml,
+		$dotNavItems;
 
 		if (o.options.dotNav) {
-			if ( ! o.isReiniting) {
-				$dotNavWrapper = $(`<div class="oslider__dotNav"></div>`);
-			} else {
-				$dotNavWrapper = o.$selector.find('.oslider__dotNav');
-			}
+
 			if (o.options.scrollSlides > 1) {
 				length = o.numberOfSlides / o.options.scrollSlides;
 			} else {
@@ -711,8 +763,17 @@ export class Oslider {
 			for (let i = 0; i < length; i++) {
 				dotNavItemsHtml += `<span class="oslider__dotNav__item" data-index=${i}></span>`;
 			}
-			$dotNavWrapper.append($(dotNavItemsHtml));
-			o.$selector.append($dotNavWrapper);
+			$dotNavItems = $(dotNavItemsHtml);
+
+			if ( ! o.isReiniting) {
+				$dotNavWrapper = $(`<div class="oslider__dotNav"></div>`);
+				$dotNavWrapper.append($dotNavItems);
+				o.$selector.append($dotNavWrapper);
+			} else {
+				o.$dotNavWrapper.children().remove();
+				o.$dotNavWrapper.append($dotNavItems)
+			}
+			
 			o.$dotNavWrapper = o.$selector.find('.oslider__dotNav');
 			if (o.options.orientation == o.orientations.HORIZONTAL) {
 				o.$dotNavWrapper.addClass('oslider__dotNav--horizontal');
@@ -734,6 +795,8 @@ export class Oslider {
 		} else {
 			activeDotNavIndex = o.currentSlide;
 		}
+
+		console.log('hey', o.currentSlide);
 
 		o.$dotNavWrapper.children().each(function() {
 			let $dot = $(this),

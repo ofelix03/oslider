@@ -290,9 +290,9 @@ export class Oslider {
 		let o = this;
 		o.$selector.trigger(
 			o.events.preSwipe({
-				currentSlideEl: o.$slider.get(o.currentSlide),
+				currentSlideEl: o.$currentActiveSlides,
 				currentSlideIndex: o.currentSlide,
-				swipe_direction: o.SCROLL_LEFT,	
+				swipeDirection: o.SCROLL_LEFT,	
 				sliderId: o.getId(),
 			}));
 
@@ -335,17 +335,17 @@ export class Oslider {
 
 		o.$selector.trigger(
 			o.events.swipe({
-				currentSlideEl: o.$slider.get(o.currentSlide),
+				currentSlideEl: o.$currentActiveSlides,
 				currentSlideIndex: o.currentSlide,
-				swipe_direction: o.SCROLL_LEFT,
+				swipeDirection: o.SCROLL_LEFT,
 				sliderId: o.getId(),
 			}));
 
 		o.$selector.trigger(
 			o.events.postSwipe({
-				currentSlideEl: o.$slider.get(o.currentSlide),
+				currentSlideEl: o.$currentActiveSlides,
 				currentSlideIndex: o.currentSlide,
-				swipe_direction: o.SCROLL_LEFT,
+				swipeDirection: o.SCROLL_LEFT,
 				sliderId: o.getId(),
 			}));
 	}
@@ -356,9 +356,9 @@ export class Oslider {
 
 		o.$selector.trigger(
 			o.events.preSwipe({
-				currentSlideEl: o.$slider.get(o.currentSlide),
+				currentSlideEl: o.$currentActiveSlides,
 				currentSlideIndex: o.currentSlide,
-				swipe_direction: o.SCROLL_LEFT,
+				swipeDirection: o.SCROLL_LEFT,
 				sliderId: this.getId(),
 			}));
 
@@ -416,17 +416,17 @@ export class Oslider {
 
 		o.$selector.trigger(
 			o.events.swipe({
-				currentSlideEl: o.$slider.get(o.currentSlide),
+				currentSlideEl: o.$currentActiveSlides,
 				currentSlideIndex: o.currentSlide,
-				swipe_direction: o.SCROLL_RIGHT,
+				swipeDirection: o.SCROLL_RIGHT,
 				sliderId: this.getId(),
 			}));
 		
 		o.$selector.trigger(
 			o.events.postSwipe({
-				currentSlideEl: o.$slider.get(o.currentSlide),
+				currentSlideEl: o.$currentActiveSlides,
 				currentSlideIndex: o.currentSlide,
-				swipe_direction: o.SCROLL_RIGHT,	
+				swipeDirection: o.SCROLL_RIGHT,	
 				sliderId: this.getId(),
 			}));
 	}
@@ -670,9 +670,9 @@ export class Oslider {
 		// oslider is setup and initialized 
 		o.$selector.trigger(
 			o.events.initialize({
-				currentSlideEl: o.$slider.get(o.currentSlide),
+				currentSlideEl: o.$currentActiveSlides,
 				currentSlideIndex: o.currentSlide,
-				swipe_direction: o.SCROLL_LEFT,
+				swipeDirection: o.SCROLL_LEFT,
 				sliderId: this.id,
 			}));
 
@@ -707,9 +707,7 @@ export class Oslider {
 			o.$selector = $(document).find(o.selector);
 		} else {
 			o.$slides = o.$selector.find('.oslider').children().addClass('oslider__slide');
-		} 
-
-		
+		}
 	}
 
 	setupNavigations() {
@@ -810,12 +808,16 @@ export class Oslider {
 	}
 
 	updateCurrentActiveSlides() {
+		console.log("updatecurrenslide()");
 		let o = this;
 		o.currentActiveSlides = [];
+		o.$currentActiveSlides = [];
+		console.log("currntSlide", o.currentSlide);
 		for (let i = o.currentSlide; i < (o.currentSlide + o.options.scrollSlides); i++) {
 			o.currentActiveSlides.push(i)
 		}
 
+		console.log('active index', o.currentActiveSlides);
 		o.$slides.each(function(index){
 			let $slide = $(this);
 			let isActive = o.currentActiveSlides.filter((el => el == index)).length;
@@ -826,6 +828,7 @@ export class Oslider {
 				$slide.removeClass('oslider__slide--active');
 			}
 		});
+		console.log("currentslides",  o.$currentActiveSlides);
 	}	
 }
 

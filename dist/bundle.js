@@ -342,9 +342,9 @@ var Oslider = /** @class */ (function () {
         if (rescroll === void 0) { rescroll = false; }
         var o = this;
         o.$selector.trigger(o.events.preSwipe({
-            currentSlideEl: o.$slider.get(o.currentSlide),
+            currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
-            swipe_direction: o.SCROLL_LEFT,
+            swipeDirection: o.SCROLL_LEFT,
             sliderId: o.getId(),
         }));
         if (o.currentSlide == 0) {
@@ -384,15 +384,15 @@ var Oslider = /** @class */ (function () {
         o.currentSlide = o.currentSlide - 1;
         o.updateCurrentActiveSlides();
         o.$selector.trigger(o.events.swipe({
-            currentSlideEl: o.$slider.get(o.currentSlide),
+            currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
-            swipe_direction: o.SCROLL_LEFT,
+            swipeDirection: o.SCROLL_LEFT,
             sliderId: o.getId(),
         }));
         o.$selector.trigger(o.events.postSwipe({
-            currentSlideEl: o.$slider.get(o.currentSlide),
+            currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
-            swipe_direction: o.SCROLL_LEFT,
+            swipeDirection: o.SCROLL_LEFT,
             sliderId: o.getId(),
         }));
     };
@@ -400,9 +400,9 @@ var Oslider = /** @class */ (function () {
         if (rescroll === void 0) { rescroll = false; }
         var o = this, offset;
         o.$selector.trigger(o.events.preSwipe({
-            currentSlideEl: o.$slider.get(o.currentSlide),
+            currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
-            swipe_direction: o.SCROLL_LEFT,
+            swipeDirection: o.SCROLL_LEFT,
             sliderId: this.getId(),
         }));
         if (o.currentSlide == Math.ceil(o.numberOfSlides / o.options.scrollSlides) - 1) {
@@ -458,15 +458,15 @@ var Oslider = /** @class */ (function () {
         o.currentSlide = o.currentSlide + 1;
         o.updateCurrentActiveSlides();
         o.$selector.trigger(o.events.swipe({
-            currentSlideEl: o.$slider.get(o.currentSlide),
+            currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
-            swipe_direction: o.SCROLL_RIGHT,
+            swipeDirection: o.SCROLL_RIGHT,
             sliderId: this.getId(),
         }));
         o.$selector.trigger(o.events.postSwipe({
-            currentSlideEl: o.$slider.get(o.currentSlide),
+            currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
-            swipe_direction: o.SCROLL_RIGHT,
+            swipeDirection: o.SCROLL_RIGHT,
             sliderId: this.getId(),
         }));
     };
@@ -705,9 +705,9 @@ var Oslider = /** @class */ (function () {
         }
         // oslider is setup and initialized 
         o.$selector.trigger(o.events.initialize({
-            currentSlideEl: o.$slider.get(o.currentSlide),
+            currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
-            swipe_direction: o.SCROLL_LEFT,
+            swipeDirection: o.SCROLL_LEFT,
             sliderId: this.id,
         }));
         console.log("after boostrap", o.numberOfSlides);
@@ -817,11 +817,15 @@ var Oslider = /** @class */ (function () {
         });
     };
     Oslider.prototype.updateCurrentActiveSlides = function () {
+        console.log("updatecurrenslide()");
         var o = this;
         o.currentActiveSlides = [];
+        o.$currentActiveSlides = [];
+        console.log("currntSlide", o.currentSlide);
         for (var i = o.currentSlide; i < (o.currentSlide + o.options.scrollSlides); i++) {
             o.currentActiveSlides.push(i);
         }
+        console.log('active index', o.currentActiveSlides);
         o.$slides.each(function (index) {
             var $slide = $(this);
             var isActive = o.currentActiveSlides.filter((function (el) { return el == index; })).length;
@@ -833,6 +837,7 @@ var Oslider = /** @class */ (function () {
                 $slide.removeClass('oslider__slide--active');
             }
         });
+        console.log("currentslides", o.$currentActiveSlides);
     };
     return Oslider;
 }());

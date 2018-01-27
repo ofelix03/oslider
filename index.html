@@ -170,12 +170,7 @@
 		function onSwipe(event) {
 			console.log('am new here', event);
 			console.log("instance", this);
-			console.log("direction", event.oslider.swipe_direction === "right")
-			if (event.oslider.swipe_direction === "right") {
-				console.log('add slider');
-				// this.addSlide("<div>hello there </div>", 0);
-				this.removeSlide(3);
-			}
+			console.log("direction", event.oslider.swipeDirection === "right")
 		}
 
 		// $('.time__minute').oslider({

@@ -95,7 +95,6 @@ exports.Oslider = oslider_1.Oslider;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var JQuery = __webpack_require__(3);
-var name = 'Felix';
 var $ = JQuery;
 var Orientations;
 (function (Orientations) {
@@ -120,9 +119,14 @@ var SliderScrollTrails;
 })(SliderScrollTrails = exports.SliderScrollTrails || (exports.SliderScrollTrails = {}));
 ;
 ;
-var oslider_id = 0;
+var osliderId = 0;
 var Oslider = /** @class */ (function () {
     function Oslider(selector, options) {
+        this.$selector = null;
+        this.$oslider = null;
+        this.$slider = null;
+        this.$slides = null;
+        this.$arrows = null;
         this.currentSlide = 0;
         this.$currentActiveSlides = [];
         this.sliderContainerDimension = {
@@ -178,11 +182,10 @@ var Oslider = /** @class */ (function () {
             postSwipe: null,
             initialize: null,
         };
-        this.oslider_id = 0;
+        this.osliderId = 0;
         var o = this;
-        /** Slider instance id */
-        this.oslider_id = oslider_id + 1;
-        oslider_id = this.oslider_id;
+        this.osliderId = osliderId + 1;
+        osliderId = this.osliderId;
         o.selector = selector;
         o.$selector = $(selector);
         o.options = $.extend({}, o.defaultOptions, options);
@@ -192,61 +195,73 @@ var Oslider = /** @class */ (function () {
         o.events = {
             swipe: function (eventData) { return JQuery.Event('oslider.swipe', { oslider: eventData }); },
             preSwipe: function (eventData) { return JQuery.Event('oslider.preswipe', { oslider: eventData }); },
-            postSwipe: function (eventData) { return JQuery.Event('oslider.initialize', { oslider: eventData }); },
+            postSwipe: function (eventData) { return JQuery.Event('oslider.postSwipe', { oslider: eventData }); },
             initialize: function (eventData) { return JQuery.Event('oslider.initialize', { oslider: eventData }); },
         };
         o.bootstrap();
-        return this;
+        return o;
     }
     Oslider.prototype.getId = function () {
-        return this.oslider_id;
+        return this.osliderId;
+    };
+    Oslider.prototype.addSlides = function (els, index, before) {
+        if (before === void 0) { before = false; }
+        var o = this;
+        o.addSlide(els, index, before);
     };
     Oslider.prototype.addSlide = function (el, index, before) {
         if (before === void 0) { before = false; }
-        var o = this;
-        var $el, $targetEl;
-        o.isReiniting = true;
+        var o = this, $els, $targetEl;
         if (typeof el === "string") {
-            $el = $(el);
+            $els = [$(el)];
         }
-        else {
-            $el = el;
+        else if (Array.isArray(el)) {
+            $els = el.map(function (e) { return $(e); });
         }
-        console.log("adding slide", el, index);
-        if (index !== undefined) {
-            $targetEl = $(o.$slides.get(index));
-        }
-        else {
-            // intent is to put new slide at the end of slides
-            // get last slide in the current $slides list
-            $targetEl = o.$slider.last();
-        }
-        if ($targetEl === undefined) {
-            throw 'Index out of bound';
-        }
-        if (before) {
-            $targetEl.before($el);
-        }
-        else {
-            $targetEl.after($el);
-        }
-        o.reboot();
-    };
-    Oslider.prototype.removeSlide = function (index) {
-        console.log("removing slide", index);
-        var o = this, $targetEl;
-        if (index == undefined) {
-            throw "No index of slide provided. No slide removed";
-        }
-        console.log("length", o.$slides.length);
-        if (index > o.$slides.length) {
-            throw "Remove slide index out of bound";
+        if (index === undefined) {
+            index = o.$slides.length - 1;
         }
         $targetEl = $(o.$slides.get(index));
-        $targetEl.remove();
-        console.log("number of slides before boostrap", o.numberOfSlides);
+        if ($targetEl === undefined) {
+            throw new Error('Index out of bound');
+        }
+        if (index < o.currentSlide && before) {
+            // new slides addition invalidates our currentSlide index
+            this.currentSlide = index + $els.length;
+        }
+        if (before) {
+            $targetEl.before($els);
+        }
+        else {
+            $targetEl.after($els);
+        }
+        o.tearDownListeners();
         o.reboot();
-        console.log("number of slides after boostrap", o.numberOfSlides);
+    };
+    Oslider.prototype.removeSlides = function (indices) {
+        var o = this;
+        for (var _i = 0, indices_1 = indices; _i < indices_1.length; _i++) {
+            var index = indices_1[_i];
+            o.removeSlide(index);
+        }
+    };
+    Oslider.prototype.removeSlide = function (index) {
+        var o = this, $targetEl;
+        if (index === undefined) {
+            console.warn('[WARNING]: No slide index provided. No slide was removed');
+            return;
+        }
+        $targetEl = $(o.$slides.get(index));
+        if ($targetEl.length == 0) {
+            console.error("[ERROR]: Index " + index + " is out of bounds of slides list(" + o.numberOfSlides);
+            return;
+        }
+        $targetEl.remove();
+        if (index < o.currentSlide) {
+            o.currentSlide = o.currentSlide - 1;
+        }
+        o.tearDownListeners();
+        o.reboot();
     };
     Oslider.prototype.autoPlay = function () {
         var o = this, autoPlayFn;
@@ -293,9 +308,8 @@ var Oslider = /** @class */ (function () {
     };
     Oslider.prototype.getScrollOffsetFor = function (direction) {
         if (direction === void 0) { direction = this.SCROLL_RIGHT; }
-        var o = this;
-        var offset;
-        if (direction == "right") {
+        var o = this, offset;
+        if (direction == o.SCROLL_RIGHT) {
             if (o.options.orientation == this.orientations.HORIZONTAL) {
                 if (o.options.visibleSlides == 1) {
                     // Disregard o.options.scrollSlides
@@ -340,12 +354,13 @@ var Oslider = /** @class */ (function () {
     };
     Oslider.prototype.scrollLeft = function (scrollPixels, rescroll) {
         if (rescroll === void 0) { rescroll = false; }
-        var o = this;
+        var o = this, offset;
         o.$selector.trigger(o.events.preSwipe({
             currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
             swipeDirection: o.SCROLL_LEFT,
             sliderId: o.getId(),
+            sliderInstance: o,
         }));
         if (o.currentSlide == 0) {
             return;
@@ -366,16 +381,16 @@ var Oslider = /** @class */ (function () {
             }
             return;
         }
-        // complete scrolls
+        // complete scroll
         if (o.options.orientation == this.orientations.HORIZONTAL) {
-            var offset = o.getScrollOffsetFor('left');
+            offset = o.getScrollOffsetFor('left');
             o.$slider.css({
                 left: offset
             });
             o.sliderOffset = offset;
         }
         else if (o.options.orientation == this.orientations.VERTICAL) {
-            var offset = o.getScrollOffsetFor('left');
+            offset = o.getScrollOffsetFor('left');
             o.$slider.css({
                 top: offset
             });
@@ -383,17 +398,20 @@ var Oslider = /** @class */ (function () {
         }
         o.currentSlide = o.currentSlide - 1;
         o.updateCurrentActiveSlides();
+        o.updateDotNav();
         o.$selector.trigger(o.events.swipe({
             currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
             swipeDirection: o.SCROLL_LEFT,
             sliderId: o.getId(),
+            sliderInstance: o,
         }));
         o.$selector.trigger(o.events.postSwipe({
             currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
             swipeDirection: o.SCROLL_LEFT,
             sliderId: o.getId(),
+            sliderInstance: o,
         }));
     };
     Oslider.prototype.scrollRight = function (scrollPixels, rescroll) {
@@ -403,7 +421,8 @@ var Oslider = /** @class */ (function () {
             currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
             swipeDirection: o.SCROLL_LEFT,
-            sliderId: this.getId(),
+            sliderId: o.getId(),
+            sliderInstance: o,
         }));
         if (o.currentSlide == Math.ceil(o.numberOfSlides / o.options.scrollSlides) - 1) {
             // We've gotten to the last slide, time to start from the very first again.
@@ -440,7 +459,7 @@ var Oslider = /** @class */ (function () {
             }
             return;
         }
-        // complete scrolls
+        // complete scroll
         if (o.options.orientation == this.orientations.HORIZONTAL) {
             offset = o.getScrollOffsetFor('right');
             o.$slider.css({
@@ -457,17 +476,20 @@ var Oslider = /** @class */ (function () {
         }
         o.currentSlide = o.currentSlide + 1;
         o.updateCurrentActiveSlides();
+        o.updateDotNav();
         o.$selector.trigger(o.events.swipe({
             currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
             swipeDirection: o.SCROLL_RIGHT,
-            sliderId: this.getId(),
+            sliderId: o.getId(),
+            sliderInstance: o,
         }));
         o.$selector.trigger(o.events.postSwipe({
             currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
             swipeDirection: o.SCROLL_RIGHT,
-            sliderId: this.getId(),
+            sliderId: o.getId(),
+            sliderInstance: o,
         }));
     };
     Oslider.prototype.setupListeners = function () {
@@ -479,32 +501,36 @@ var Oslider = /** @class */ (function () {
         if (o.options.dotNav) {
             o.$dotNavWrapper.children().on('click', function () {
                 var $dot = $(this), index = $dot.data('index');
-                if (index != o.currentSlide) {
-                    if (index < o.currentSlide) {
-                        o.currentSlide = index + 1;
-                        o.scrollLeft();
-                        o.updateDotNav(o.SCROLL_LEFT);
-                    }
-                    else {
-                        o.currentSlide = index - 1;
-                        o.scrollRight();
-                        o.updateDotNav(o.SCROLL_RIGHT);
-                    }
-                    if (o.options.autoplay) {
-                        o.restartAutoPlay();
-                    }
+                if (index == o.currentSlide) {
+                    return;
+                }
+                if (index < o.currentSlide) {
+                    o.currentSlide = index + 1;
+                    o.scrollLeft();
+                    o.updateDotNav(o.SCROLL_LEFT);
+                }
+                else if (index > o.currentSlide) {
+                    o.currentSlide = index - 1;
+                    o.scrollRight();
+                    o.updateDotNav(o.SCROLL_RIGHT);
+                }
+                if (o.options.autoplay) {
+                    o.restartAutoPlay();
                 }
             });
         }
-        o.$arrows.click(function () {
-            o.handleSlide($(this));
-            if (o.options.autoplay) {
-                o.restartAutoPlay();
-            }
-        });
-        o.$selector.find('.oslider').on('dragstart', dragStart);
-        o.$selector.find('.oslider').on('dragend', dragEnd);
-        o.$selector.find('.oslider').on('drag', drag);
+        if (o.options.showNav) {
+            o.$arrows.on('click', function (event) {
+                event.preventDefault();
+                o.handleSlide($(this));
+                if (o.options.autoplay) {
+                    o.restartAutoPlay();
+                }
+            });
+        }
+        o.$selector.find('.oslider').on('dragstart touchstart', dragStart);
+        o.$selector.find('.oslider').on('dragend touchend', dragEnd);
+        o.$selector.find('.oslider').on('drag touchmove', drag);
         function dragStart(event) {
             o.sliderScrollTrail = [];
             var ghostImg = document.querySelector('.oslider__ghostImg');
@@ -530,10 +556,9 @@ var Oslider = /** @class */ (function () {
                         }
                         else {
                             o.scrollRight(o.sliderOffset, true);
+                            o.updateCurrentActiveSlides();
                             o.updateDotNav(o.SCROLL_LEFT);
                         }
-                    }
-                    else {
                     }
                 }
                 else if (o.isDragging.right == true) {
@@ -545,6 +570,7 @@ var Oslider = /** @class */ (function () {
                         }
                         else {
                             o.scrollLeft(o.sliderOffset, true);
+                            o.updateCurrentActiveSlides();
                             o.updateDotNav(o.SCROLL_RIGHT);
                         }
                     }
@@ -556,10 +582,12 @@ var Oslider = /** @class */ (function () {
                     if (o.dragOffsetFromTouchPoint > 0) {
                         if (o.dragOffsetFromTouchPoint > (o.slideWidth / 4)) {
                             o.scrollRight();
+                            o.updateCurrentActiveSlides();
                             o.updateDotNav(o.SCROLL_LEFT);
                         }
                         else {
                             o.scrollRight(o.sliderOffset, true);
+                            o.updateCurrentActiveSlides();
                             o.updateDotNav(o.SCROLL_LEFT);
                         }
                     }
@@ -573,6 +601,7 @@ var Oslider = /** @class */ (function () {
                         }
                         else {
                             o.scrollLeft(o.sliderOffset, true);
+                            o.updateCurrentActiveSlides();
                             o.updateDotNav(o.SCROLL_RIGHT);
                         }
                     }
@@ -637,23 +666,30 @@ var Oslider = /** @class */ (function () {
         }
         if ($arrow.hasClass('oslider__arrow--left') || $arrow.hasClass('oslider__arrow--top')) {
             o.scrollLeft();
-            o.updateDotNav(o.SCROLL_LEFT);
         }
         if ($arrow.hasClass('oslider__arrow--right') || $arrow.hasClass('oslider__arrow--bottom')) {
             o.scrollRight();
-            o.updateDotNav(o.SCROLL_RIGHT);
         }
-        o.updateCurrentActiveSlides();
     };
     Oslider.prototype.reboot = function () {
-        this.currentSlide = 0;
-        this.bootstrap();
+        var o = this;
+        o.isReiniting = true;
+        o.bootstrap();
+    };
+    Oslider.prototype.tearDownListeners = function () {
+        var o = this;
+        o.$selector.off('oslider.swipe oslider.preswipe oslider.postswipe oslider.initialize');
+        if (o.options.dotNav) {
+            o.$dotNavWrapper.children().off('click');
+        }
+        o.$arrows.off('click');
+        o.$selector.find('.oslider').off('dragstart touchstart');
+        o.$selector.find('.oslider').off('dragend touchend');
+        o.$selector.find('.oslider').off('drag touchmove');
     };
     Oslider.prototype.bootstrap = function () {
-        console.log("bootstrapping");
         var o = this, height, width;
         o.prepareSlider();
-        o.numberOfSlides = o.$selector.find('.oslider__slide').length;
         o.setupNavigations();
         o.setupDotNavigation();
         if (o.options.orientation == o.orientations.HORIZONTAL) {
@@ -697,38 +733,38 @@ var Oslider = /** @class */ (function () {
                 }
             });
         }
-        o.setupListeners();
         o.updateCurrentActiveSlides();
         o.updateDotNav();
         if (o.options.autoplay) {
             o.autoPlay();
         }
-        // oslider is setup and initialized 
+        // if (!o.isReiniting) {
+        o.setupListeners();
         o.$selector.trigger(o.events.initialize({
             currentSlideEl: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
             swipeDirection: o.SCROLL_LEFT,
-            sliderId: this.id,
+            sliderId: o.getId(),
+            sliderInstance: o,
         }));
-        console.log("after boostrap", o.numberOfSlides);
+        // }
     };
     Oslider.prototype.prepareSlider = function () {
-        var o = this;
+        var o = this, ghostImg;
         o.prepareSlides();
+        o.numberOfSlides = o.$selector.find('.oslider__slide').length;
         o.$slider = o.$selector.find('.oslider');
         o.$slides = o.$selector.find('.oslider').children();
         o.sliderContainerDimension.width = o.$selector.width();
         o.sliderContainerDimension.height = o.$selector.height();
-        var ghostImg = $('<img src="" class="oslider__ghostImg" style="width: 0.1px; height: 0.1px;">');
+        ghostImg = $('<img src="" class="oslider__ghostImg" style="width: 0.1px; height: 0.1px;">');
         o.$selector.append(ghostImg);
     };
     Oslider.prototype.prepareSlides = function () {
         var o = this, $oslider, $osliderInnerContainer;
-        console.log("slider", o.$slider);
-        if (o.$slider === undefined) {
-            console.log("first tagging");
+        if (o.$slider == null) {
             $oslider = $('<div class="oslider" draggable="true">');
-            o.$selector.addClass('oslider-container').data('oslider-id', o.oslider_id);
+            o.$selector.addClass('oslider-container').data('oslider-id', o.osliderId);
             $oslider.append(o.$selector.children().addClass('oslider__slide'));
             $osliderInnerContainer = $('<div class="oslider-container__inner">');
             $osliderInnerContainer.append($oslider);
@@ -766,7 +802,7 @@ var Oslider = /** @class */ (function () {
         var o = this, $dotNavWrapper, dotNavItemsHtml, $dotNavItems;
         if (o.options.dotNav) {
             if (o.options.scrollSlides > 1) {
-                length = o.numberOfSlides / o.options.scrollSlides;
+                length = Math.ceil(o.numberOfSlides / o.options.scrollSlides);
             }
             else {
                 length = o.numberOfSlides;
@@ -798,17 +834,13 @@ var Oslider = /** @class */ (function () {
         var o = this;
         if (!o.options.dotNav)
             return;
-        var activeDotNavIndex;
-        if (slideDirection === undefined) {
-            activeDotNavIndex = 0;
+        var activeDotNavIndices = [], i;
+        for (i = o.currentSlide; i < (o.currentSlide + o.options.visibleSlides); i++) {
+            activeDotNavIndices.push(i);
         }
-        else {
-            activeDotNavIndex = o.currentSlide;
-        }
-        console.log('hey', o.currentSlide);
         o.$dotNavWrapper.children().each(function () {
             var $dot = $(this), index = $dot.data('index');
-            if (index == activeDotNavIndex) {
+            if (activeDotNavIndices.indexOf(index) !== -1) {
                 $dot.addClass('oslider__dotNav__item--active');
             }
             else {
@@ -817,19 +849,16 @@ var Oslider = /** @class */ (function () {
         });
     };
     Oslider.prototype.updateCurrentActiveSlides = function () {
-        console.log("updatecurrenslide()");
         var o = this;
         o.currentActiveSlides = [];
         o.$currentActiveSlides = [];
-        console.log("currntSlide", o.currentSlide);
-        for (var i = o.currentSlide; i < (o.currentSlide + o.options.scrollSlides); i++) {
+        var i = o.currentSlide;
+        for (i; i < (o.currentSlide + o.options.visibleSlides); i++) {
             o.currentActiveSlides.push(i);
         }
-        console.log('active index', o.currentActiveSlides);
         o.$slides.each(function (index) {
             var $slide = $(this);
-            var isActive = o.currentActiveSlides.filter((function (el) { return el == index; })).length;
-            if (isActive) {
+            if (o.currentActiveSlides.indexOf(index) !== -1) {
                 o.$currentActiveSlides.push($slide);
                 $slide.addClass('oslider__slide--active');
             }
@@ -837,7 +866,6 @@ var Oslider = /** @class */ (function () {
                 $slide.removeClass('oslider__slide--active');
             }
         });
-        console.log("currentslides", o.$currentActiveSlides);
     };
     return Oslider;
 }());

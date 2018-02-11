@@ -4,6 +4,8 @@
 	<title>Oslider</title>
 	<link rel="stylesheet" type="text/css" href="node_modules/font-awesome/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="src/oslider.css">
+	    <meta name="viewport" content="width=device-width">
+
 	<style type="text/css">
 
 	.container-wrapper {
@@ -146,49 +148,27 @@
 	<script type="text/javascript">
 
 
-		// $('.time__hour').oslider({
-		// 	// visibleSlides: 3,
-		// 	orientation: 'vertical',
-		// 	showNav: true,
-		// 	// dotNav: true,
-		// 	scrollSlides: 1,
-		// 	onSwipeEventHandler: onSwipe,
-		// });
-
 		$('.container').oslider({
+			scrollSlides: 1,
 			visibleSlides: 2,
 			showNav: true,
 			dotNav: true,
-			scrollSlides: 2,
 			autoplaySpeed: 2000,
-			// autoplay: true,
-			// infinite: true,
 			onSwipeEventHandler: onSwipe,
 		});
 
-
+		counter = 1;
 		function onSwipe(event) {
-			console.log('am new here', event);
-			console.log("instance", this);
-			console.log("direction", event.oslider.swipeDirection === "right")
+			console.log("onSwipe");
+			// markups = []
+			// if (counter <= 1) {
+			// 	markups = [`<h1>hello ${counter}</h1>`, `<h1>hello again ${counter} </h1>`];
+			// 	this.addSlides(markups);
+			// 	counter++;
+			// } else {
+			// 	this.removeSlides([5]);
+			// }
 		}
-
-		// $('.time__minute').oslider({
-		// 	// visibleSlides: 3,
-		// 	orientation: 'vertical',
-		// 	showNav: true,
-		// 	// dotNav: true,
-		// 	scrollSlides: 1,
-		// 	onSwipeEventHandler: onSwipe,
-		// });
-
-		// $('.container2').oslider({
-		// 	orientation: 'vertical',
-		// 	showNav: true,
-		// 	dotNav: true,
-		// 	scrollSlides: 1,
-		// 	onSwipeEventHandler: onSwipe,
-		// });
 
 	</script>
 </body>

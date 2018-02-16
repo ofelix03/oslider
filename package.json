@@ -1,6 +1,6 @@
 {
   "name": "@ofelix03/oslider",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "slider plugin jquery",
   "main": "src/oslider.ts",
   "scripts": {

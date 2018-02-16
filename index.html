@@ -150,7 +150,7 @@
 
 		$('.container').oslider({
 			scrollSlides: 1,
-			visibleSlides: 2,
+			visibleSlides: 1,
 			showNav: true,
 			dotNav: true,
 			autoplaySpeed: 2000,
@@ -159,15 +159,12 @@
 
 		counter = 1;
 		function onSwipe(event) {
-			console.log("onSwipe");
-			// markups = []
-			// if (counter <= 1) {
-			// 	markups = [`<h1>hello ${counter}</h1>`, `<h1>hello again ${counter} </h1>`];
-			// 	this.addSlides(markups);
-			// 	counter++;
-			// } else {
-			// 	this.removeSlides([5]);
-			// }
+			console.log('onswipe', event.oslider);
+			markups = []
+			if (counter == 3) {
+				this.scrollLeftTo(1);
+			}
+			counter++
 		}
 
 	</script>

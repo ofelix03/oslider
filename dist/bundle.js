@@ -306,26 +306,49 @@ var Oslider = /** @class */ (function () {
             return matches.top > matches.left ? SliderScrollTrails.Top : SliderScrollTrails.Bottom;
         }
     };
-    Oslider.prototype.getScrollOffsetFor = function (direction) {
-        if (direction === void 0) { direction = this.SCROLL_RIGHT; }
+    /**
+     * [getScrollOffsetFor description]
+     * @param {[type]}    direction=this.SCROLL_RIGHT [description]
+     * @param {number = null}        slideIndex [description]
+     */
+    Oslider.prototype.getScrollOffsetFor = function (direction, slideIndex) {
+        if (slideIndex === void 0) { slideIndex = null; }
         var o = this, offset;
+        // if (slideIndex !== null) {
+        // 	if (direction == o.SCROLL_LEFT) {
+        // 		if (slideIndex < o.currentSlide && slideIndex >= 0) {
+        // 			o.currentSlide = slideIndex + 1; // we have to increate it by, making it seems like the current slide is a slide ahead of the need slide index
+        // 		}
+        // 	} else if (direction == o.SCROLL_RIGHT) {
+        // 		if (slideIndex > o.currentSlide && slideIndex <= o.numberOfSlides) {
+        // 			o.currentSlide = slideIndex - 1;
+        // 		}
+        // 	}
+        // }
+        // console.log('hey', slideIndex);
+        if (slideIndex !== null) {
+            o.currentSlide = 0;
+        }
+        else {
+            slideIndex = 1;
+        }
         if (direction == o.SCROLL_RIGHT) {
             if (o.options.orientation == this.orientations.HORIZONTAL) {
                 if (o.options.visibleSlides == 1) {
                     // Disregard o.options.scrollSlides
-                    offset = -1 * ((o.currentSlide + 1) * o.sliderContainerDimension.width);
+                    offset = -1 * ((o.currentSlide + slideIndex) * o.sliderContainerDimension.width);
                 }
                 else {
-                    offset = -1 * ((o.currentSlide + 1) * o.options.scrollSlides * o.slideWidth);
+                    offset = -1 * ((o.currentSlide + slideIndex) * o.options.scrollSlides * o.slideWidth);
                 }
             }
             else if (o.options.orientation == this.orientations.VERTICAL) {
                 if (o.options.visibleSlides == 1) {
                     // Disregard o.options.scrollSlides
-                    offset = -1 * ((o.currentSlide + 1) * o.sliderContainerDimension.height);
+                    offset = -1 * ((o.currentSlide + slideIndex) * o.sliderContainerDimension.height);
                 }
                 else {
-                    offset = -1 * ((o.currentSlide + 1) * o.options.scrollSlides * o.slideWidth);
+                    offset = -1 * ((o.currentSlide + slideIndex) * o.options.scrollSlides * o.slideWidth);
                 }
             }
             return offset;
@@ -334,19 +357,19 @@ var Oslider = /** @class */ (function () {
             if (o.options.orientation == this.orientations.HORIZONTAL) {
                 if (o.options.visibleSlides == 1) {
                     // Disregard scrollSlides
-                    offset = -1 * ((o.currentSlide - 1) * o.sliderContainerDimension.width);
+                    offset = -1 * ((o.currentSlide - slideIndex) * o.sliderContainerDimension.width);
                 }
                 else {
-                    offset = -1 * ((o.currentSlide - 1) * o.options.scrollSlides * o.slideWidth);
+                    offset = -1 * ((o.currentSlide - slideIndex) * o.options.scrollSlides * o.slideWidth);
                 }
             }
             else if (o.options.orientation == this.orientations.VERTICAL) {
                 if (o.options.visibleSlides == 1) {
                     // Disregard scrollSlides
-                    offset = -1 * ((o.currentSlide - 1) * o.sliderContainerDimension.height);
+                    offset = -1 * ((o.currentSlide - slideIndex) * o.sliderContainerDimension.height);
                 }
                 else {
-                    offset = -1 * ((o.currentSlide - 1) * o.options.scrollSlides * o.slideWidth);
+                    offset = -1 * ((o.currentSlide - slideIndex) * o.options.scrollSlides * o.slideWidth);
                 }
             }
             return offset;
@@ -356,15 +379,14 @@ var Oslider = /** @class */ (function () {
         if (rescroll === void 0) { rescroll = false; }
         var o = this, offset;
         o.$selector.trigger(o.events.preSwipe({
-            currentSlideEl: o.$currentActiveSlides,
+            currentSlideEls: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
             swipeDirection: o.SCROLL_LEFT,
             sliderId: o.getId(),
             sliderInstance: o,
         }));
-        if (o.currentSlide == 0) {
+        if (o.currentSlide == 0)
             return;
-        }
         if (scrollPixels !== undefined) {
             if (rescroll == false) {
                 scrollPixels = o.sliderOffset + scrollPixels;
@@ -379,54 +401,39 @@ var Oslider = /** @class */ (function () {
                     top: scrollPixels
                 });
             }
-            return;
         }
-        // complete scroll
-        if (o.options.orientation == this.orientations.HORIZONTAL) {
-            offset = o.getScrollOffsetFor('left');
-            o.$slider.css({
-                left: offset
-            });
-            o.sliderOffset = offset;
+        else {
+            // let scrollOffset = o.getScrollOffsetFor(o.SCROLL_LEFT);
+            o.performCompleteScroll(o.SCROLL_LEFT);
+            o.$selector.trigger(o.events.swipe({
+                currentSlideEls: o.$currentActiveSlides,
+                currentSlideIndex: o.currentSlide,
+                swipeDirection: o.SCROLL_LEFT,
+                sliderId: o.getId(),
+                sliderInstance: o,
+            }));
+            o.$selector.trigger(o.events.postSwipe({
+                currentSlideEls: o.$currentActiveSlides,
+                currentSlideIndex: o.currentSlide,
+                swipeDirection: o.SCROLL_LEFT,
+                sliderId: o.getId(),
+                sliderInstance: o,
+            }));
         }
-        else if (o.options.orientation == this.orientations.VERTICAL) {
-            offset = o.getScrollOffsetFor('left');
-            o.$slider.css({
-                top: offset
-            });
-            o.sliderOffset = offset;
-        }
-        o.currentSlide = o.currentSlide - 1;
-        o.updateCurrentActiveSlides();
-        o.updateDotNav();
-        o.$selector.trigger(o.events.swipe({
-            currentSlideEl: o.$currentActiveSlides,
-            currentSlideIndex: o.currentSlide,
-            swipeDirection: o.SCROLL_LEFT,
-            sliderId: o.getId(),
-            sliderInstance: o,
-        }));
-        o.$selector.trigger(o.events.postSwipe({
-            currentSlideEl: o.$currentActiveSlides,
-            currentSlideIndex: o.currentSlide,
-            swipeDirection: o.SCROLL_LEFT,
-            sliderId: o.getId(),
-            sliderInstance: o,
-        }));
     };
     Oslider.prototype.scrollRight = function (scrollPixels, rescroll) {
         if (rescroll === void 0) { rescroll = false; }
         var o = this, offset;
         o.$selector.trigger(o.events.preSwipe({
-            currentSlideEl: o.$currentActiveSlides,
+            currentSlideEls: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
             swipeDirection: o.SCROLL_LEFT,
             sliderId: o.getId(),
             sliderInstance: o,
         }));
         if (o.currentSlide == Math.ceil(o.numberOfSlides / o.options.scrollSlides) - 1) {
-            // We've gotten to the last slide, time to start from the very first again.
             if (o.options.infinite) {
+                // We've gotten to the last slide, time to start from the very first again.
                 offset = 0;
                 if (o.options.orientation == this.orientations.HORIZONTAL) {
                     o.$slider.css({
@@ -457,35 +464,103 @@ var Oslider = /** @class */ (function () {
                     top: scrollPixels
                 });
             }
-            return;
         }
-        // complete scroll
+        else {
+            o.performCompleteScroll(o.SCROLL_RIGHT);
+            o.$selector.trigger(o.events.swipe({
+                currentSlideEls: o.$currentActiveSlides,
+                currentSlideIndex: o.currentSlide,
+                swipeDirection: o.SCROLL_RIGHT,
+                sliderId: o.getId(),
+                sliderInstance: o,
+            }));
+            o.$selector.trigger(o.events.postSwipe({
+                currentSlideEls: o.$currentActiveSlides,
+                currentSlideIndex: o.currentSlide,
+                swipeDirection: o.SCROLL_RIGHT,
+                sliderId: o.getId(),
+                sliderInstance: o,
+            }));
+        }
+    };
+    Oslider.prototype.performCompleteScroll = function (scrollDirection, slideIndex) {
+        if (scrollDirection === void 0) { scrollDirection = this.SCROLL_RIGHT; }
+        var o = this, scrollOffset, hasSlideIndex = false;
+        if (slideIndex !== undefined) {
+            hasSlideIndex = true;
+            scrollOffset = o.getScrollOffsetFor(scrollDirection, slideIndex);
+        }
+        else {
+            scrollOffset = o.getScrollOffsetFor(scrollDirection);
+        }
         if (o.options.orientation == this.orientations.HORIZONTAL) {
-            offset = o.getScrollOffsetFor('right');
             o.$slider.css({
-                left: offset
+                left: scrollOffset
             });
-            o.sliderOffset = offset;
+            o.sliderOffset = scrollOffset;
         }
         else if (o.options.orientation == this.orientations.VERTICAL) {
-            offset = o.getScrollOffsetFor("right");
             o.$slider.css({
-                top: offset
+                top: scrollOffset
             });
-            o.sliderOffset = offset;
+            o.sliderOffset = scrollOffset;
         }
-        o.currentSlide = o.currentSlide + 1;
+        if (hasSlideIndex) {
+            o.currentSlide = slideIndex;
+        }
+        else if (scrollDirection == o.SCROLL_RIGHT)
+            o.currentSlide = o.currentSlide + 1;
+        else if (scrollDirection == o.SCROLL_LEFT)
+            o.currentSlide = o.currentSlide - 1;
         o.updateCurrentActiveSlides();
         o.updateDotNav();
         o.$selector.trigger(o.events.swipe({
-            currentSlideEl: o.$currentActiveSlides,
+            currentSlideEls: o.$currentActiveSlides,
+            currentSlideIndex: o.currentSlide,
+            swipeDirection: scrollDirection,
+            sliderId: o.getId(),
+            sliderInstance: o,
+        }));
+        o.$selector.trigger(o.events.postSwipe({
+            currentSlideEls: o.$currentActiveSlides,
+            currentSlideIndex: o.currentSlide,
+            swipeDirection: scrollDirection,
+            sliderId: o.getId(),
+            sliderInstance: o,
+        }));
+    };
+    Oslider.prototype.scrollLeftTo = function (slideIndex) {
+        if (slideIndex === void 0) { slideIndex = 0; }
+        var o = this, offset;
+        o.performCompleteScroll(o.SCROLL_LEFT, slideIndex);
+        o.$selector.trigger(o.events.swipe({
+            currentSlideEls: o.$currentActiveSlides,
+            currentSlideIndex: o.currentSlide,
+            swipeDirection: o.SCROLL_LEFT,
+            sliderId: o.getId(),
+            sliderInstance: o,
+        }));
+        o.$selector.trigger(o.events.postSwipe({
+            currentSlideEls: o.$currentActiveSlides,
+            currentSlideIndex: o.currentSlide,
+            swipeDirection: o.SCROLL_LEFT,
+            sliderId: o.getId(),
+            sliderInstance: o,
+        }));
+    };
+    Oslider.prototype.scrollRightTo = function (slideIndex) {
+        if (slideIndex === void 0) { slideIndex = 0; }
+        var o = this, offset;
+        o.performCompleteScroll(o.SCROLL_RIGHT, slideIndex);
+        o.$selector.trigger(o.events.swipe({
+            currentSlideEls: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
             swipeDirection: o.SCROLL_RIGHT,
             sliderId: o.getId(),
             sliderInstance: o,
         }));
         o.$selector.trigger(o.events.postSwipe({
-            currentSlideEl: o.$currentActiveSlides,
+            currentSlideEls: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
             swipeDirection: o.SCROLL_RIGHT,
             sliderId: o.getId(),
@@ -741,7 +816,7 @@ var Oslider = /** @class */ (function () {
         // if (!o.isReiniting) {
         o.setupListeners();
         o.$selector.trigger(o.events.initialize({
-            currentSlideEl: o.$currentActiveSlides,
+            currentSlideEls: o.$currentActiveSlides,
             currentSlideIndex: o.currentSlide,
             swipeDirection: o.SCROLL_LEFT,
             sliderId: o.getId(),

@@ -508,10 +508,12 @@ var Oslider = /** @class */ (function () {
         if (hasSlideIndex) {
             o.currentSlide = slideIndex;
         }
-        else if (scrollDirection == o.SCROLL_RIGHT)
+        else if (scrollDirection == o.SCROLL_RIGHT) {
             o.currentSlide = o.currentSlide + 1;
-        else if (scrollDirection == o.SCROLL_LEFT)
+        }
+        else if (scrollDirection == o.SCROLL_LEFT) {
             o.currentSlide = o.currentSlide - 1;
+        }
         o.updateCurrentActiveSlides();
         o.updateDotNav();
         o.$selector.trigger(o.events.swipe({
@@ -566,6 +568,10 @@ var Oslider = /** @class */ (function () {
             sliderId: o.getId(),
             sliderInstance: o,
         }));
+    };
+    Oslider.prototype.scrollTo = function (slideIndex) {
+        if (slideIndex === void 0) { slideIndex = 0; }
+        this.scrollRightTo(slideIndex);
     };
     Oslider.prototype.setupListeners = function () {
         var o = this;

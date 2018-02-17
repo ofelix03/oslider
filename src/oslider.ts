@@ -465,10 +465,11 @@ export class Oslider {
 
 		if (hasSlideIndex) {
 			o.currentSlide = slideIndex;
-		} else if (scrollDirection == o.SCROLL_RIGHT) 
-		o.currentSlide = o.currentSlide + 1;  
-		else if (scrollDirection == o.SCROLL_LEFT) 
+		} else if (scrollDirection == o.SCROLL_RIGHT) {
+			o.currentSlide = o.currentSlide + 1;  			
+		} else if (scrollDirection == o.SCROLL_LEFT) {
 			o.currentSlide = o.currentSlide - 1;
+		} 
 		o.updateCurrentActiveSlides();
 		o.updateDotNav();
 
@@ -535,6 +536,10 @@ export class Oslider {
 				sliderId: o.getId(),
 				sliderInstance: o,
 			}));
+	}
+
+	scrollTo(slideIndex:number = 0) {
+		this.scrollRightTo(slideIndex);
 	}
 
 	setupListeners() {

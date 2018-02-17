@@ -230,6 +230,14 @@ export class Oslider {
 		this.autoPlay();
 	}
 
+	getVisibleSlides():Array<JQuery> {
+		return this.$currentActiveSlides;
+	}
+
+	getVisibleSlidesIndex():Array<number> {
+		return this.currentActiveSlides;
+	}
+
 	getTrailDirection() {
 		let len = this.sliderScrollTrail.length,
 		matches = {

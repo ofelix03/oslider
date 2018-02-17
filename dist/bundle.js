@@ -277,6 +277,12 @@ var Oslider = /** @class */ (function () {
         clearInterval(this.timerId);
         this.autoPlay();
     };
+    Oslider.prototype.getVisibleSlides = function () {
+        return this.$currentActiveSlides;
+    };
+    Oslider.prototype.getVisibleSlidesIndex = function () {
+        return this.currentActiveSlides;
+    };
     Oslider.prototype.getTrailDirection = function () {
         var len = this.sliderScrollTrail.length, matches = {
             right: 0,

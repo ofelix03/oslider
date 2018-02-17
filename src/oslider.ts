@@ -230,7 +230,7 @@ export class Oslider {
 		this.autoPlay();
 	}
 
-	getVisibleSlides():Array<JQuery> {
+	getVisibleSlides() {
 		return this.$currentActiveSlides;
 	}
 

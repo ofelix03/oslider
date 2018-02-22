@@ -184,11 +184,13 @@ var Oslider = /** @class */ (function () {
         };
         this.osliderId = 0;
         var o = this;
-        this.osliderId = osliderId + 1;
+        o.osliderId = osliderId + 1;
         osliderId = this.osliderId;
         o.selector = selector;
         o.$selector = $(selector);
         o.options = $.extend({}, o.defaultOptions, options);
+        console.log('o.selector', o.selector);
+        console.log('o.$selector', o.$selector);
         if (o.options.scrollSlides > o.options.visibleSlides) {
             throw new Error("Constraint scrollSlides <= visibleSlides not upheld");
         }

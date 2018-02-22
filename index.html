@@ -147,8 +147,8 @@
 	<script type="text/javascript" src="dist/bundle.js"></script>
 	<script type="text/javascript">
 
-
-		$('.container').oslider({
+		let a = $('.container');
+		a.oslider({
 			scrollSlides: 1,
 			visibleSlides: 1,
 			showNav: true,
@@ -160,11 +160,11 @@
 		counter = 1;
 		function onSwipe(event) {
 			console.log('onswipe', event.oslider);
-			markups = []
-			if (counter == 3) {
-				this.scrollLeftTo(1);
-			}
-			counter++
+			// markups = []
+			// if (counter == 3) {
+			// 	this.scrollLeftTo(1);
+			// }
+			// counter++
 		}
 
 	</script>

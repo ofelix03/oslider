@@ -1,7 +1,7 @@
   const path = require('path');
 
   module.exports = {
-    entry: './index.ts',
+    entry: './src/index.ts',
     module: {
       rules: [
         {
@@ -15,7 +15,7 @@
       extensions: [ '.tsx', '.ts', '.js' ]
     },
     output: {
-      filename: 'bundle.js',
+      filename: 'oslider.js',
       path: path.resolve(__dirname, 'dist')
     }
   };

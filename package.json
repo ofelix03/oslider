@@ -1,10 +1,11 @@
 {
   "name": "@ofelix03/oslider",
   "version": "0.14.0",
-  "description": "slider plugin jquery",
-  "main": "src/oslider.ts",
+  "description": "Typescript JQuery slider plugin",
+  "main": "dist/oslider.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx webpack --watch"
   },
   "keywords": [
     "slider",
@@ -22,6 +23,10 @@
   },
   "devDependencies": {
     "awesome-typescript-loader": "^3.4.1",
-    "typescript": "^2.6.2"
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^4.0.1",
+    "typescript": "^2.6.2",
+    "webpack": "^4.1.0",
+    "webpack-cli": "^2.0.10"
   }
 }

@@ -1,1 +1,1 @@
-export * from './oslider';
+export { Oslider } from './oslider';

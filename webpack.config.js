@@ -6,8 +6,7 @@
       rules: [
       {
         test: /\.tsx?$/,
-          // use: 'awesome-typescript-loader',
-          use: 'ts-loader',
+          use: 'awesome-typescript-loader',
           exclude: /node_modules/
         }
         ]
@@ -17,6 +16,6 @@
       },
       output: {
         filename: 'oslider.js',
-        path: path.resolve(__dirname)
+        path: path.resolve(__dirname, 'dist')
       }
     };

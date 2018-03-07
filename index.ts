@@ -1,1 +1,0 @@
-export { Oslider } from './src/index';

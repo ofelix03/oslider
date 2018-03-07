@@ -146,12 +146,12 @@ export class Oslider {
 		return this.osliderId;
 	}
 
-	addSlides(els: Array<string|JQuery>|JQuery, index:number, before:boolean = false) {
+	addSlides(els: Array<string>, index:number, before:boolean = false) {
 		let o = this;
 		o.addSlide(els, index, before);
 	}
 
-	addSlide(el: string|Array<string|JQuery>|JQuery, index:number, before:boolean = false) {
+	addSlide(el: string|Array<string>, index:number, before:boolean = false) {
 		let o = this,
 		$els, 
 		$targetEl;

@@ -4,18 +4,19 @@
     entry: './src/oslider.ts',
     module: {
       rules: [
-        {
-          test: /\.tsx?$/,
-          use: 'awesome-typescript-loader',
+      {
+        test: /\.tsx?$/,
+          // use: 'awesome-typescript-loader',
+          use: 'ts-loader',
           exclude: /node_modules/
         }
-      ]
-    },
-    resolve: {
-      extensions: [ '.tsx', '.ts', '.js' ]
-    },
-    output: {
-      filename: 'oslider.js',
-      path: path.resolve(__dirname, 'dist')
-    }
-  };
+        ]
+      },
+      resolve: {
+        extensions: [ '.tsx', '.ts', '.js' ]
+      },
+      output: {
+        filename: 'oslider.js',
+        path: path.resolve(__dirname)
+      }
+    };

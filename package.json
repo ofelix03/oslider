@@ -2,7 +2,8 @@
   "name": "@ofelix03/oslider",
   "version": "0.15.0",
   "description": "Typescript JQuery slider plugin",
-  "main": "dist/oslider.js",
+  "main": "./dist/oslider.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx webpack --watch"

@@ -1,4 +1,3 @@
-
 import * as JQuery from 'jquery';
 
 let $ = JQuery;

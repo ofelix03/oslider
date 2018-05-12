@@ -1,4 +1,4 @@
-/// <reference types="jquery" />
+import * as JQuery from "jquery";
 export declare enum Orientations {
     HORIZONTAL = "horizontal",
     VERTICAL = "vertical",
@@ -112,7 +112,7 @@ export declare class Oslider {
     reboot(): void;
     tearDownListeners(): void;
     applyMarginWidthHeightToSlide($slide: any, orientation: Orientations): any;
-    getSlide(index: number): JQuery<HTMLElement>;
+    getSlide(index: number): any;
     bootstrap(): void;
     prepareSlider(): void;
     prepareSlides(): void;
@@ -120,4 +120,7 @@ export declare class Oslider {
     setupDotNavigation(): void;
     updateDotNav(slideDirection?: any): void;
     updateCurrentActiveSlides(): void;
+}
+export interface JQuery {
+    oslider(options?: any): JQuery;
 }

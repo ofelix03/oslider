@@ -48,6 +48,7 @@ export declare class Oslider {
     $oslider: any;
     $slider: any;
     $slides: any;
+    slidesWidths: number[];
     $arrows: any;
     currentSlide: number;
     $currentActiveSlides: any[];
@@ -113,6 +114,8 @@ export declare class Oslider {
     handleSlide($arrow?: any): void;
     reboot(): void;
     tearDownListeners(): void;
+    applyMarginWidthHeightToSlide($slide: any, orientation: string): any;
+    getSlide(index: number): any;
     bootstrap(): void;
     prepareSlider(): void;
     prepareSlides(): void;
@@ -120,4 +123,7 @@ export declare class Oslider {
     setupDotNavigation(): void;
     updateDotNav(slideDirection?: any): void;
     updateCurrentActiveSlides(): void;
+}
+export interface JQuery {
+    oslider(options?: any): JQuery;
 }

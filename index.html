@@ -1,50 +1,52 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>Oslider</title>
 	<link rel="stylesheet" type="text/css" href="node_modules/font-awesome/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="src/oslider.css">
-	    <meta name="viewport" content="width=device-width">
+	<meta name="viewport" content="width=device-width">
 
 	<style type="text/css">
+		.container-wrapper {
+			padding: 4px;
+			display: inline-block;
+			margin: auto auto;
+		}
 
-	.container-wrapper {
-		padding: 4px;
-		display: inline-block;
-		margin: auto auto;
-	}
+		.container {
+			width: 80%;
+			height: 200px;
+			margin: 30px auto;
+		}
 
-	.container {
-		width: 200px;
-		height: 200px;
-		margin: 30px auto;
-	}
+		.container2 {
+			width: 300px;
+			height: 200px;
+			border: 1px solid red;
+			margin: 30px auto;
+		}
 
-	.container2 {
-		width: 300px;
-		height: 200px;
-		border: 1px solid red;
-		margin: 30px auto;
-	}
-/*
+		/*
 	.time 
 	width: 100px;
 	height: 100%;
 	border: 1px solid #ddd;
 }
 */
-.time-wrapper {
-	width: 100px;
-	height: 150px;
-	display: flex;
-	flex-direction: row nowrap;
-	margin-top: 100px;
-	margin-left: auto;
-	margin-right: auto;
-}
 
-</style>
+		.time-wrapper {
+			width: 100px;
+			height: 150px;
+			display: flex;
+			flex-direction: row nowrap;
+			margin-top: 100px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	</style>
 </head>
+
 <body>
 	<div class="container">
 		<img src="imgs/photo-1418479631014-8cbf89db3431.jpg" />
@@ -55,7 +57,7 @@
 		<img src="imgs/photo-1421098518790-5a14be02b243.jpg" />
 		<img src="imgs/photo-1423439793616-f2aa4356b37e.jpg" />
 		<img src="imgs/download.jpg" class="oslider__slide" />
-	</div> 
+	</div>
 	<div class="time-wrapper">
 		<div class="time time__hour">
 			<div>
@@ -133,16 +135,16 @@
 				<span>01</span>
 			</div>
 		</div>
-	</div>	
+	</div>
 
-	<div class="container2">	
+	<div class="container2">
 		<div>one</div>
 		<div>two</div>
 		<div>three</div>
 		<div>four</div>
 	</div>
 
-	
+
 	<script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="dist/oslider.js"></script>
 	<script type="text/javascript">
@@ -150,11 +152,13 @@
 		let a = $('.container');
 		a.oslider({
 			scrollSlides: 1,
-			visibleSlides: 1,
+			visibleSlides: 2,
+			orientation: 'vertical',
 			showNav: true,
 			dotNav: true,
 			autoplaySpeed: 2000,
 			onSwipeEventHandler: onSwipe,
+			margin: 4
 		});
 
 		counter = 1;
@@ -169,4 +173,5 @@
 
 	</script>
 </body>
+
 </html>

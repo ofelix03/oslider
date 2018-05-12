@@ -1,6 +1,6 @@
 {
   "name": "@ofelix03/oslider",
-  "version": "0.27.0",
+  "version": "0.27.1",
   "description": "Typescript JQuery slider plugin",
   "main": "./dist/oslider.js",
   "types": "./dist/oslider.d.ts",

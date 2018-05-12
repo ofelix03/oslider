@@ -1,11 +1,11 @@
 .oslider-container{position:relative;box-sizing:border-box !important}.oslider-container__inner{position:relative;overflow:hidden;box-sizing:border-box !important;height:100%}
 .oslider{width:auto;height:auto;display:flex;position:relative;transition:all ease-in-out .2s;box-sizing:border-box}
 .oslider--horizontal{flex-flow:row nowrap}.oslider--vertical{flex-flow:column nowrap}
-.oslider__slide{flex:0 0 auto;box-sizing:border-box}.oslider__arrow{width:30px;height:30px;font-size:20px;text-align:center;line-height:30px;background:#fff;border:1px solid #ddd}
-.oslider__arrow--show{display:block !important}.oslider__arrow--right{right:-16px}
-.oslider__arrow--left{left:-16px}.oslider__arrow--top{top:-22px}.oslider__arrow--bottom{bottom:-22px}
-.oslider__dotNav{position:absolute;z-index:100;margin:auto;text-align:center;padding:10px;background:#dddddd26;display:flex;justify-content:center}
-.oslider__dotNav--horizontal{width:90%;height:auto;bottom:0;left:0;flex-flow:row wrap;margin:auto}
+.oslider__slide{flex:0 0 auto;box-sizing:border-box}.oslider__arrow{position:absolute;padding:5px 6px;cursor:pointer;display:none;z-index:500;border-radius:50%;color:#777;width:30px;height:30px;font-size:20px;text-align:center;line-height:30px;background:#fff;border:2px solid #dddddd9e}
+.oslider__arrow--show{display:block !important;box-shadow:-1px 1px .5px #dddddd9e}
+.oslider__arrow--right{right:-22px;box-shadow:1px 1px .5px #dddddd9e}.oslider__arrow--left{left:-22px}
+.oslider__arrow--top{top:-22px}.oslider__arrow--bottom{bottom:-22px}.oslider__dotNav{position:absolute;z-index:100;margin:auto;text-align:center;padding:10px;display:flex;justify-content:center;box-sizing:border-box}
+.oslider__dotNav--white{background:#dddddd26 !important}.oslider__dotNav--horizontal{width:100%;height:auto;bottom:0;left:0;flex-flow:row wrap;margin:auto}
 .oslider__dotNav--vertical{height:90%;width:auto;top:0;left:0;margin:auto;flex-flow:column wrap}
 .oslider__dotNav__item{width:10px;height:10px;border:2px solid #ddd;margin:2px;display:inline-block;border-radius:50%;cursor:pointer}
 .oslider__dotNav__item--active{background:#ddd}

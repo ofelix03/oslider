@@ -15,13 +15,14 @@
 		}
 
 		.container {
-			width: 80%;
+			width: 500px;
 			height: 200px;
 			margin: 30px auto;
 		}
 
 		.container img {
-			margin: 10px;
+			margin-right: 10px;
+			/* width: 200px; */
 		}
 
 		.container2 {
@@ -29,6 +30,12 @@
 			height: 200px;
 			border: 1px solid red;
 			margin: 30px auto;
+		}
+
+		.container2 .tag {
+			border: 1px solid green;
+			font-weight: bold;
+			padding: 20px;
 		}
 
 		/*
@@ -142,10 +149,18 @@
 	</div>
 
 	<div class="container2">
-		<div>one</div>
-		<div>two</div>
-		<div>three</div>
-		<div>four</div>
+		<div>
+			<div class='tag'>Photography</div>
+		</div>
+		<div>
+			<div class='tag'>Music</div>
+		</div>
+		<div>
+			<div class='tag'>Sport</div>
+		</div>
+		<div>
+			<div class='tag'>Agriculture</div>
+		</div>
 	</div>
 
 
@@ -158,9 +173,11 @@
 			scrollSlides: 1,
 			visibleSlides: 2,
 			showNav: true,
+			// orientation: 'vertical',
 			dotNav: true,
 			autoplaySpeed: 2000,
 			onSwipeEventHandler: onSwipe,
+			margin: 2
 		});
 
 		counter = 1;
@@ -172,6 +189,18 @@
 			// }
 			// counter++
 		}
+
+		let b = $('.container2')
+		b.oslider({
+			scrollSlides: 1,
+			visibleSlides: 2,
+			orientation: 'vertical',
+			showNav: true,
+			dotNav: true,
+			margin: {
+				right: 2
+			}
+		})
 
 	</script>
 </body>

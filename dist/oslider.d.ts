@@ -1,3 +1,4 @@
+/// <reference types="jquery" />
 export declare enum Orientations {
     HORIZONTAL = "horizontal",
     VERTICAL = "vertical",
@@ -48,6 +49,7 @@ export declare class Oslider {
     $oslider: any;
     $slider: any;
     $slides: any;
+    slidesWidths: number[];
     $arrows: any;
     currentSlide: number;
     $currentActiveSlides: any[];
@@ -64,10 +66,6 @@ export declare class Oslider {
         length: number;
     };
     slideWidth: number;
-    orientations: {
-        HORIZONTAL: string;
-        VERTICAL: string;
-    };
     options: any;
     defaultOptions: any;
     dragStartPos: number | null;
@@ -113,6 +111,8 @@ export declare class Oslider {
     handleSlide($arrow?: any): void;
     reboot(): void;
     tearDownListeners(): void;
+    applyMarginWidthHeightToSlide($slide: any, orientation: Orientations): any;
+    getSlide(index: number): JQuery<HTMLElement>;
     bootstrap(): void;
     prepareSlider(): void;
     prepareSlides(): void;

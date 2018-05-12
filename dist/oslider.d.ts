@@ -1,4 +1,3 @@
-import * as JQuery from "jquery";
 export declare enum Orientations {
     HORIZONTAL = "horizontal",
     VERTICAL = "vertical",

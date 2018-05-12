@@ -867,7 +867,7 @@ export class Oslider {
     return $slide;
   }
 
-  getSlide(index: number) {
+  getSlide(index: number): any {
     const o = this;
     return $(o.$slides[index]);
   }

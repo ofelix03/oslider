@@ -1065,7 +1065,7 @@ export class Oslider {
   }
 }
 
-interface JQuery {
+export interface JQuery {
   oslider(options?: any): JQuery;
 }
 

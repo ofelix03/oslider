@@ -83,11 +83,15 @@ export class Oslider {
     length: this.SLIDER_LENGTH
   };
   slideWidth = 0;
+  orientations = {
+    HORIZONTAL: "horizontal",
+    VERTICAL: "vertical"
+  };
   options: any;
   defaultOptions: any = {
     visibleSlides: 1,
     scrollSlides: 1,
-    orientation: Orientations.HORIZONTAL,
+    orientation: this.orientations.HORIZONTAL,
     slideSize: null, // sliderSize = null; means auto, use orientation to determin slide size(i.e. setting it's width or height)
     scrollPos: 0,
     sliderWidth: 999,
@@ -271,11 +275,11 @@ export class Oslider {
       }
     }
 
-    if (this.options.orientation == Orientations.HORIZONTAL) {
+    if (this.options.orientation == this.orientations.HORIZONTAL) {
       return matches.right > matches.left
         ? SliderScrollTrails.Right
         : SliderScrollTrails.Left;
-    } else if (this.options.orientation == Orientations.VERTICAL) {
+    } else if (this.options.orientation == this.orientations.VERTICAL) {
       return matches.top > matches.left
         ? SliderScrollTrails.Top
         : SliderScrollTrails.Bottom;
@@ -297,7 +301,7 @@ export class Oslider {
     }
 
     if (direction == o.SCROLL_RIGHT) {
-      if (o.options.orientation == Orientations.HORIZONTAL) {
+      if (o.options.orientation == o.orientations.HORIZONTAL) {
         if (o.options.visibleSlides == 1) {
           offset =
             -1 *
@@ -309,7 +313,7 @@ export class Oslider {
               o.options.scrollSlides *
               o.getSlide(slideIndex).outerWidth(true));
         }
-      } else if (o.options.orientation == Orientations.VERTICAL) {
+      } else if (o.options.orientation == o.orientations.VERTICAL) {
         if (o.options.visibleSlides == 1) {
           offset =
             -1 *
@@ -324,7 +328,7 @@ export class Oslider {
       }
       return offset;
     } else if (direction == o.SCROLL_LEFT) {
-      if (o.options.orientation == Orientations.HORIZONTAL) {
+      if (o.options.orientation == o.orientations.HORIZONTAL) {
         if (o.options.visibleSlides == 1) {
           offset =
             -1 *
@@ -336,7 +340,7 @@ export class Oslider {
               o.options.scrollSlides *
               o.getSlide(slideIndex).outerWidth(true));
         }
-      } else if (o.options.orientation == Orientations.VERTICAL) {
+      } else if (o.options.orientation == o.orientations.VERTICAL) {
         if (o.options.visibleSlides == 1) {
           offset =
             -1 *
@@ -373,11 +377,11 @@ export class Oslider {
         scrollPixels = o.sliderOffset + scrollPixels;
       }
 
-      if (o.options.orientation == Orientations.HORIZONTAL) {
+      if (o.options.orientation == o.orientations.HORIZONTAL) {
         o.$slider.css({
           left: scrollPixels
         });
-      } else if (o.options.orientation == Orientations.VERTICAL) {
+      } else if (o.options.orientation == o.orientations.VERTICAL) {
         o.$slider.css({
           top: scrollPixels
         });
@@ -427,11 +431,11 @@ export class Oslider {
       if (o.options.infinite) {
         // We've gotten to the last slide, time to start from the very first again.
         offset = 0;
-        if (o.options.orientation == Orientations.HORIZONTAL) {
+        if (o.options.orientation == o.orientations.HORIZONTAL) {
           o.$slider.css({
             left: offset
           });
-        } else if (o.options.orientation == Orientations.VERTICAL) {
+        } else if (o.options.orientation == o.orientations.VERTICAL) {
           o.$slider.css({
             top: offset
           });
@@ -446,11 +450,11 @@ export class Oslider {
       if (rescroll == false) {
         scrollPixels = o.sliderOffset - scrollPixels;
       }
-      if (o.options.orientation == Orientations.HORIZONTAL) {
+      if (o.options.orientation == o.orientations.HORIZONTAL) {
         o.$slider.css({
           left: scrollPixels
         });
-      } else if (o.options.orientation == Orientations.VERTICAL) {
+      } else if (o.options.orientation == o.orientations.VERTICAL) {
         o.$slider.css({
           top: scrollPixels
         });
@@ -494,12 +498,12 @@ export class Oslider {
       scrollOffset = o.getScrollOffsetFor(scrollDirection);
     }
 
-    if (o.options.orientation == Orientations.HORIZONTAL) {
+    if (o.options.orientation == o.orientations.HORIZONTAL) {
       o.$slider.css({
         left: scrollOffset
       });
       o.sliderOffset = scrollOffset;
-    } else if (o.options.orientation == Orientations.VERTICAL) {
+    } else if (o.options.orientation == o.orientations.VERTICAL) {
       o.$slider.css({
         top: scrollOffset
       });
@@ -654,15 +658,15 @@ export class Oslider {
       event.originalEvent.dataTransfer.setData("text/uri-list", "");
       event.originalEvent.dataTransfer.setData("text/plain", "");
       event.originalEvent.dataTransfer.setData("text/plain", "hello there");
-      if (o.options.orientation == Orientations.HORIZONTAL) {
+      if (o.options.orientation == o.orientations.HORIZONTAL) {
         o.dragStartPos = event.offsetX;
-      } else if (o.options.orientation == Orientations.VERTICAL) {
+      } else if (o.options.orientation == o.orientations.VERTICAL) {
         o.dragStartPos = event.offsetY;
       }
     }
 
     function dragEnd(event) {
-      if (o.options.orientation == Orientations.HORIZONTAL) {
+      if (o.options.orientation == o.orientations.HORIZONTAL) {
         if (o.isDragging.left == true) {
           // a mouse swipe to the left
           if (o.dragOffsetFromTouchPoint > 0) {
@@ -691,7 +695,7 @@ export class Oslider {
           }
         }
         o.isDragging.left = o.isDragging.right = false;
-      } else if (o.options.orientation == Orientations.VERTICAL) {
+      } else if (o.options.orientation == o.orientations.VERTICAL) {
         if (o.isDragging.top == true) {
           // a mouse swipe to the top
           if (o.dragOffsetFromTouchPoint > 0) {
@@ -725,7 +729,7 @@ export class Oslider {
 
     function drag(event) {
       let offset;
-      if (o.options.orientation == Orientations.HORIZONTAL) {
+      if (o.options.orientation == o.orientations.HORIZONTAL) {
         if (event.offsetX > 0 && event.offsetX < o.dragStartPos) {
           // a left swipe/mouse scroll equiavlent to a left nav click
           offset = Math.abs(o.dragStartPos) - Math.abs(event.offsetX);
@@ -747,7 +751,7 @@ export class Oslider {
           o.scrollLeft(offset);
           o.sliderScrollTrail.push(SliderScrollTrails.Right);
         }
-      } else if (o.options.orientation == Orientations.VERTICAL) {
+      } else if (o.options.orientation == o.orientations.VERTICAL) {
         if (event.offsetY > 0 && event.offsetY < o.dragStartPos) {
           // a top swipe/mouse scroll equiavlent to a top nav click
           offset = Math.abs(o.dragStartPos) - Math.abs(event.offsetY);
@@ -819,7 +823,7 @@ export class Oslider {
     o.$selector.find(".oslider").off("drag touchmove");
   }
 
-  applyMarginWidthHeightToSlide($slide: any, orientation: Orientations) {
+  applyMarginWidthHeightToSlide($slide: any, orientation: string) {
     let o = this;
     let margin = 0,
       keys = [],
@@ -830,10 +834,10 @@ export class Oslider {
       width = this.$selector.width();
       height = this.$selector.height();
     } else {
-      if (orientation == Orientations.HORIZONTAL) {
+      if (orientation == o.orientations.HORIZONTAL) {
         width = o.sliderContainerDimension.width / o.options.visibleSlides;
         height = o.$selector.height();
-      } else if (orientation == Orientations.VERTICAL) {
+      } else if (orientation == o.orientations.VERTICAL) {
         height = o.sliderContainerDimension.height / o.options.visibleSlides;
         width = o.$selector.width();
       }
@@ -880,19 +884,19 @@ export class Oslider {
     o.prepareSlider();
     o.setupNavigations();
     o.setupDotNavigation();
-    if (o.options.orientation == Orientations.HORIZONTAL) {
+    if (o.options.orientation == o.orientations.HORIZONTAL) {
       o.$slider
         .addClass("oslider--horizontal")
         .width(o.sliderDimension.length)
         .height(o.sliderDimension.width);
       o.$slides.each(function() {
-        o.applyMarginWidthHeightToSlide($(this), Orientations.HORIZONTAL);
+        o.applyMarginWidthHeightToSlide($(this), o.orientations.HORIZONTAL);
       });
-    } else if (o.options.orientation == Orientations.VERTICAL) {
+    } else if (o.options.orientation == o.orientations.VERTICAL) {
       o.$slider.addClass("oslider--vertical");
       o.$slider.height(o.sliderDimension.length).width(o.sliderDimension.width);
       o.$slides.each(function() {
-        o.applyMarginWidthHeightToSlide($(this), Orientations.VERTICAL);
+        o.applyMarginWidthHeightToSlide($(this), o.orientations.VERTICAL);
       });
     }
     o.updateCurrentActiveSlides();
@@ -957,7 +961,7 @@ export class Oslider {
       offset;
 
     if (o.isReiniting) return;
-    if (o.options.orientation == Orientations.HORIZONTAL) {
+    if (o.options.orientation == o.orientations.HORIZONTAL) {
       $sliderArrowsMarkup = `
 			<div class="oslider__arrow oslider__arrow--left"><i class="fa fa-arrow-left"></i></div>
 			<div class="oslider__arrow oslider__arrow--right"><i class="fa fa-arrow-right"></i></div>
@@ -967,7 +971,7 @@ export class Oslider {
         o.$selector.height() / 2 - o.$selector.find(".oslider__arrow").height();
       o.$selector.find(".oslider__arrow--left").css({ top: offset });
       o.$selector.find(".oslider__arrow--right").css({ top: offset });
-    } else if (o.options.orientation == Orientations.VERTICAL) {
+    } else if (o.options.orientation == o.orientations.VERTICAL) {
       $sliderArrowsMarkup = `
 			<div class="oslider__arrow oslider__arrow--top"><i class="fa fa-arrow-up"></i></div>
 			<div class="oslider__arrow oslider__arrow--bottom"><i class="fa fa-arrow-down"></i></div>
@@ -1010,9 +1014,9 @@ export class Oslider {
         o.$dotNavWrapper.append($dotNavItems);
       }
       o.$dotNavWrapper = o.$selector.find(".oslider__dotNav");
-      if (o.options.orientation == Orientations.HORIZONTAL) {
+      if (o.options.orientation == o.orientations.HORIZONTAL) {
         o.$dotNavWrapper.addClass("oslider__dotNav--horizontal");
-      } else if (o.options.orientation == Orientations.VERTICAL) {
+      } else if (o.options.orientation == o.orientations.VERTICAL) {
         o.$dotNavWrapper.addClass("oslider__dotNav--vertical");
       }
     }

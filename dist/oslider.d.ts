@@ -65,6 +65,10 @@ export declare class Oslider {
         length: number;
     };
     slideWidth: number;
+    orientations: {
+        HORIZONTAL: string;
+        VERTICAL: string;
+    };
     options: any;
     defaultOptions: any;
     dragStartPos: number | null;
@@ -110,7 +114,7 @@ export declare class Oslider {
     handleSlide($arrow?: any): void;
     reboot(): void;
     tearDownListeners(): void;
-    applyMarginWidthHeightToSlide($slide: any, orientation: Orientations): any;
+    applyMarginWidthHeightToSlide($slide: any, orientation: string): any;
     getSlide(index: number): any;
     bootstrap(): void;
     prepareSlider(): void;
